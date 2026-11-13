@@ -23,6 +23,8 @@ Vite + React + TypeScript + Tailwind CSS v4 + React Router(HashRouter). 배포�
   - `src/styles/tokens.css`
   - 배포와 빌드 설정, `.github/`
 - 색, 글꼴, 모서리는 `src/styles/tokens.css`에 정의된 이름만 쓴다(`bg-brand`, `text-muted`, `border-line`, `rounded-card`). 색상 값을 직접 적지 않는다. 새 색이 필요하면 조장에게 요청하라고 안내한다.
+- 이미지는 `public/images/`에 영어 소문자와 하이픈 이름으로 넣고 `/images/파일이름`으로 불러온다. 피그마 링크와 참고 자료는 `design/`에 사용자 이름으로 시작하는 파일로 둔다.
+- 주제, 화면 목록, 담당은 `docs/plan.md`에 있다. 작업을 시작하기 전에 읽는다. 이 파일은 조장만 고치므로 수정하지 않는다.
 - 데이터는 `src/data/mock.ts`의 가짜 데이터를 먼저 쓴다. 자기 화면에만 쓰는 가짜 데이터는 화면 파일 안에 둔다. 실제 API와 서버 연결은 조장이 한다.
 
 ## git
