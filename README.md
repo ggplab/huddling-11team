@@ -2,6 +2,8 @@
 
 허들링 클럽 2회 오프라인 밋업 조별 실험 레포입니다.
 
+뼈대(빈 화면 두 개, 공용 색)와 규칙 문서는 행사 전에 조장이 준비했습니다. 서비스 화면과 기능은 현장에서 트랙을 보고 만듭니다.
+
 ## 처음 왔다면
 
 1. [CONTRIBUTING.md](CONTRIBUTING.md)를 읽습니다. Claude Code에 그대로 말할 문장이 있습니다.
@@ -32,6 +34,7 @@ npm run dev
 
 ## 규칙과 도구
 
+- 진행 절차와 지난 해커톤 복기: [docs/hackathon-playbook.md](docs/hackathon-playbook.md)
 - 사람용 규칙: [CONTRIBUTING.md](CONTRIBUTING.md)
 - 에이전트용 규칙: [CLAUDE.md](CLAUDE.md) (Codex는 [AGENTS.md](AGENTS.md)를 거쳐 같은 규칙을 읽습니다)
 - 디자이너용 도구 목록: [TOOLS.md](TOOLS.md)
