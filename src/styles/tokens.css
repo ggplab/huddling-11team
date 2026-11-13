@@ -1,0 +1,19 @@
+/* 공용 파일: 개발 담당만 고친다. 색, 글꼴, 모서리 값은 여기 한 곳에서만 정한다. */
+@import "tailwindcss";
+
+@theme {
+  /* 색: bg-brand, text-ink, border-line 처럼 쓴다 */
+  --color-brand: #2563eb;
+  --color-brand-soft: #dbeafe;
+  --color-ink: #111827;
+  --color-muted: #6b7280;
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-line: #e5e7eb;
+
+  /* 글꼴: font-sans */
+  --font-sans: "Pretendard Variable", Pretendard, system-ui, -apple-system, sans-serif;
+
+  /* 모서리: rounded-card */
+  --radius-card: 16px;
+}
