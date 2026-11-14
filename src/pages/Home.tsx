@@ -5,6 +5,11 @@ export const order = 0
 
 const PROTOTYPES = [
   {
+    to: '/race',
+    name: '레이싱',
+    text: '조마다 차 한 대. 커밋이 쌓이면 앞으로 나가고, 충돌이 나면 뒤로 밀립니다.',
+  },
+  {
     to: '/skyline',
     name: '시안 A 스카이라인',
     text: '조마다 도시 하나. 네 구역에 건물이 올라가고, 충돌이 나면 건물이 낮아집니다.',

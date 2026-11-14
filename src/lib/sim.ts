@@ -1,109 +1,55 @@
-// 예시 커밋을 시간 순서로 재생해 조별 진척을 계산한다. 세 시안이 이 파일 하나를 함께 쓴다.
+// 커밋을 시간 순서로 재생해 조별 진척을 계산한다. 세 시안이 이 파일 하나를 함께 쓴다.
+// 계산은 core.ts(순수 함수)가 하고, 이 파일은 원천 선택과 재생 상태를 맡는다.
 import { useMemo, useSyncExternalStore } from 'react'
-import { DURATION, EVENTS, KINDS, TEAMS, type CommitEvent, type Kind, type Team } from '../data/events'
+import { DURATION, EVENTS, KINDS, TEAMS } from '../data/events'
+import type { Kind } from '../data/events'
+import {
+  RULES,
+  computeRaceTrack,
+  computeSnapshot,
+  toDataset,
+  type Dataset,
+  type RaceTrack,
+  type Snapshot,
+  type Status,
+} from './core'
 
-// 점수 규칙. 숫자를 바꾸면 도시가 자라는 속도가 바뀐다.
-export const RULES = {
-  pointsPerWeight: 10, // 커밋 한 번의 기본 점수 = 무게 x 10
-  mergeBonus: 5, // PR이 머지되면 더하는 점수
-  conflictPenalty: 15, // 충돌이 나면 깎는 점수
-  boostWindow: 10, // 최근 몇 분을 볼지
-  boostCount: 6, // 그 안에 몇 번 이상 올리면 부스트인지
-  boostRate: 1.5, // 부스트일 때 곱하는 값
-  target: 320, // 한 구역이 100%가 되는 점수
-  recentWindow: 20, // 상태를 판정할 때 보는 최근 몇 분
+export { RULES, KINDS }
+export type { KindStat, Status, TeamStat, Snapshot, RaceTrack, Dataset } from './core'
+
+export type Source = 'example' | 'real'
+export type LoadState = 'idle' | 'loading' | 'ready' | 'failed'
+
+const EXAMPLE: Dataset = {
+  events: EVENTS,
+  teams: TEAMS,
+  duration: DURATION,
+  excluded: { before: 0, after: 0, invalid: 0 },
 }
 
-export type KindStat = { points: number; progress: number; level: number; commits: number }
+export const REAL_URL = '/data/snapshot.json'
 
-export type Status = '시작 전' | '달리는 중' | '순항' | '충돌 중' | '멈춤'
+let real: Dataset | undefined // 불러온 실제 데이터(이벤트 1건 이상일 때만)
 
-export type TeamStat = Team & {
-  kinds: Record<Kind, KindStat>
-  total: number // 네 구역 평균, 0~100
-  commits: number
-  merges: number
-  conflicts: number
-  recent: number
-  recentConflicts: number
-  boost: boolean
-  status: Status
-  last?: CommitEvent
-}
-
-export type Snapshot = { t: number; teams: TeamStat[]; feed: CommitEvent[] }
-
-function emptyKinds(): Record<Kind, KindStat> {
-  return {
-    dev: { points: 0, progress: 0, level: 0, commits: 0 },
-    design: { points: 0, progress: 0, level: 0, commits: 0 },
-    plan: { points: 0, progress: 0, level: 0, commits: 0 },
-    docs: { points: 0, progress: 0, level: 0, commits: 0 },
-  }
+function active(): Dataset {
+  return state.source === 'real' && state.load === 'ready' && real ? real : EXAMPLE
 }
 
 export function snapshot(t: number): Snapshot {
-  const past = EVENTS.filter((e) => e.t <= t)
-  const teams = TEAMS.map((team): TeamStat => {
-    const mine = past.filter((e) => e.team === team.id)
-    const kinds = emptyKinds()
-    let merges = 0
-    let conflicts = 0
-    mine.forEach((e, i) => {
-      const stat = kinds[e.kind]
-      if (e.type === 'conflict') {
-        conflicts += 1
-        stat.points = Math.max(0, stat.points - RULES.conflictPenalty)
-        return
-      }
-      const burst = mine.slice(0, i + 1).filter((p) => p.t > e.t - RULES.boostWindow).length
-      let gain = e.weight * RULES.pointsPerWeight
-      if (e.type === 'merge') {
-        merges += 1
-        gain += RULES.mergeBonus
-      }
-      if (burst >= RULES.boostCount) gain *= RULES.boostRate
-      stat.points += gain
-      stat.commits += 1
-    })
-    KINDS.forEach(({ key }) => {
-      const stat = kinds[key]
-      stat.progress = Math.min(1, stat.points / RULES.target)
-      stat.level = Math.min(10, Math.floor(stat.progress * 10))
-    })
-    const recentEvents = mine.filter((e) => e.t > t - RULES.recentWindow)
-    const recentConflicts = recentEvents.filter((e) => e.type === 'conflict').length
-    const boost = mine.filter((e) => e.t > t - RULES.boostWindow && e.type !== 'conflict').length >= RULES.boostCount
-    let status: Status = '순항'
-    if (mine.length === 0) status = '시작 전'
-    else if (recentConflicts >= 2) status = '충돌 중'
-    else if (recentEvents.length === 0) status = '멈춤'
-    else if (boost) status = '달리는 중'
-    const total = Math.round((KINDS.reduce((sum, { key }) => sum + kinds[key].progress, 0) / KINDS.length) * 100)
-    return {
-      ...team,
-      kinds,
-      total,
-      commits: mine.length - conflicts,
-      merges,
-      conflicts,
-      recent: recentEvents.length,
-      recentConflicts,
-      boost,
-      status,
-      last: mine[mine.length - 1],
-    }
-  })
-  return { t, teams, feed: past.slice(-14).reverse() }
+  return computeSnapshot(active(), t)
+}
+
+export function raceTrack(steps: number): RaceTrack {
+  return computeRaceTrack(active(), steps)
 }
 
 // 재생 상태. 화면을 옮겨도 이어지도록 컴포넌트 밖에 둔다.
-type SimState = { t: number; playing: boolean; speed: number }
+type SimState = { t: number; playing: boolean; speed: number; source: Source; load: LoadState }
 
 const BASE_MINUTES_PER_SECOND = 2 // 1배속에서 1초에 2분이 흐른다
 const TICK_MS = 100
 
-let state: SimState = { t: 0, playing: false, speed: 5 }
+let state: SimState = { t: 0, playing: false, speed: 5, source: 'example', load: 'idle' }
 const listeners = new Set<() => void>()
 let timer: ReturnType<typeof setInterval> | undefined
 
@@ -113,10 +59,11 @@ function set(next: Partial<SimState>) {
 }
 
 function tick() {
-  const t = Math.min(DURATION, state.t + (state.speed * BASE_MINUTES_PER_SECOND * TICK_MS) / 1000)
-  if (t >= DURATION) {
+  const end = active().duration
+  const t = Math.min(end, state.t + (state.speed * BASE_MINUTES_PER_SECOND * TICK_MS) / 1000)
+  if (t >= end) {
     stop()
-    set({ t: DURATION, playing: false })
+    set({ t: end, playing: false })
   } else {
     set({ t })
   }
@@ -129,7 +76,7 @@ function stop() {
 
 export const sim = {
   play() {
-    if (state.t >= DURATION) set({ t: 0 })
+    if (state.t >= active().duration) set({ t: 0 })
     stop()
     timer = setInterval(tick, TICK_MS)
     set({ playing: true })
@@ -146,11 +93,31 @@ export const sim = {
     set({ speed })
   },
   seek(t: number) {
-    set({ t: Math.max(0, Math.min(DURATION, t)) })
+    set({ t: Math.max(0, Math.min(active().duration, t)) })
   },
   reset() {
     stop()
     set({ t: 0, playing: false })
+  },
+  // 데이터 원천을 바꾼다. 재생은 처음으로 돌아간다. 'real'은 불러오기에 실패하면 예시 데이터로 남는다.
+  async setSource(source: Source) {
+    stop()
+    if (source === 'example') {
+      set({ source, t: 0, playing: false, load: 'idle' })
+      return
+    }
+    set({ source, t: 0, playing: false, load: 'loading' })
+    try {
+      const res = await fetch(REAL_URL, { cache: 'no-store' })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      const ds = toDataset(await res.json())
+      if (ds.events.length === 0) throw new Error('이벤트 0건')
+      real = ds
+      if (state.source === 'real') set({ load: 'ready', t: 0 })
+    } catch {
+      real = undefined
+      if (state.source === 'real') set({ load: 'failed', t: 0 })
+    }
   },
 }
 
@@ -163,8 +130,24 @@ function subscribe(fn: () => void) {
 
 export function useSim() {
   const current = useSyncExternalStore(subscribe, () => state)
-  const snap = useMemo(() => snapshot(current.t), [current.t])
-  return { ...current, snap }
+  const ds = current.source === 'real' && current.load === 'ready' ? real : undefined
+  const data = ds ?? EXAMPLE
+  const snap = useMemo(() => computeSnapshot(data, current.t), [data, current.t])
+  return {
+    ...current, // t, playing, speed, source(고른 원천), load('idle'|'loading'|'ready'|'failed')
+    activeSource: (ds ? 'real' : 'example') as Source, // 지금 실제로 보이는 원천
+    fallback: current.source === 'real' && current.load === 'failed', // 실제 데이터 실패로 예시를 보여 주는 중
+    duration: data.duration,
+    excluded: data.excluded, // 재생에서 뺀 건수(시작 이전, 끝 이후, 형식 오류)
+    collectedAt: data.collectedAt,
+    snap,
+  }
+}
+
+// 순위 변화 그래프나 자취용. 현재 원천 기준으로 steps칸의 distance와 rank를 돌려준다.
+export function useRaceTrack(steps: number): RaceTrack {
+  const { activeSource } = useSim()
+  return useMemo(() => computeRaceTrack(active(), steps), [activeSource, steps])
 }
 
 export function clock(t: number) {

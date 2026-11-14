@@ -1,29 +1,11 @@
 // 시안 C. 순위, 최근 속도, 충돌을 한 표로 보고 지금 가 볼 조를 알려 준다.
 import Playback from '../components/Playback'
-import { KINDS, TEAMS } from '../data/events'
-import { KIND_STYLE, RULES, STATUS_STYLE, clock, useSim, type TeamStat } from '../lib/sim'
+import { KINDS } from '../data/events'
+import { KIND_STYLE, RULES, STATUS_STYLE, clock, useSim } from '../lib/sim'
+import { pickVisit } from '../lib/visit'
 
 export const title = '시안 C 관제판'
 export const order = 3
-
-// 운영진이 먼저 찾아갈 조를 고른다. 멈춘 조, 충돌 중인 조, 한쪽만 짓는 조 순서다.
-function pickVisit(teams: TeamStat[]): { team: TeamStat; reason: string } | undefined {
-  const stalled = teams.find((team) => team.status === '멈춤')
-  if (stalled) return { team: stalled, reason: `최근 ${RULES.recentWindow}분 동안 커밋이 없습니다. 막힌 곳이 있는지 물어봅니다.` }
-  const crashing = teams.find((team) => team.status === '충돌 중')
-  if (crashing)
-    return { team: crashing, reason: `최근 ${RULES.recentWindow}분에 충돌이 ${crashing.recentConflicts}번 났습니다. 파일을 나눠 맡았는지 봅니다.` }
-  const lopsided = teams
-    .filter((team) => team.commits > 5)
-    .map((team) => {
-      const values = KINDS.map(({ key }) => team.kinds[key].progress)
-      return { team, gap: Math.max(...values) - Math.min(...values) }
-    })
-    .sort((a, b) => b.gap - a.gap)[0]
-  if (lopsided && lopsided.gap > 0.5)
-    return { team: lopsided.team, reason: '한 구역만 높습니다. 나머지 역할이 비어 있는지 봅니다.' }
-  return undefined
-}
 
 export default function Board() {
   const { snap } = useSim()
@@ -40,7 +22,7 @@ export default function Board() {
         {visit ? (
           <p className="mt-1">
             <span className="text-lg font-bold">
-              {visit.team.city} ({visit.team.team})
+              {visit.team.city === visit.team.team ? visit.team.team : `${visit.team.city} (${visit.team.team})`}
             </span>
             <span className="ml-2 text-sm text-muted">{visit.reason}</span>
           </p>
@@ -111,7 +93,7 @@ export default function Board() {
                   className={`mt-1 h-2 w-2 shrink-0 rounded-full ${e.type === 'conflict' ? 'bg-danger' : KIND_STYLE[e.kind].bg}`}
                 />
                 <span className={e.type === 'conflict' ? 'text-danger' : ''}>
-                  <span className="font-semibold">{TEAMS.find((team) => team.id === e.team)?.city}</span> {e.message}
+                  <span className="font-semibold">{snap.teams.find((team) => team.id === e.team)?.city}</span> {e.message}
                 </span>
               </li>
             ))}
