@@ -25,3 +25,6 @@ export function partLevel(commits: number): number {
 }
 
 export const partPenguin = (partIndex: number, level: number) => `/images/race/penguins/penguin-${PART_KEYS[partIndex]}-level-${level}.png`;
+
+/** 피그마 racing 소품 19장 (public/images/race/props) */
+export const prop = (name: string) => `/images/race/props/${name}.png`;

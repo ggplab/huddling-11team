@@ -1,3 +1,4 @@
+import { prop } from '../assets';
 import { penguinFor } from '../assets';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CONFIG } from '../config';
@@ -83,6 +84,10 @@ export function StartScene({ onDone, accent = color.accent }: Props) {
             <div className={go ? 'cr-scroll' : ''} style={{ position: 'absolute', left: 24, right: 24, top: 14, height: 30, borderRadius: 6, background: `repeating-linear-gradient(to right, ${color.seat} 0 30px, ${color.stands} 30px 40px)` }} />
           </div>
 
+          <img src={prop('start-sign-purple')} alt="" draggable={false} style={{ position: 'absolute', left: 150, top: 8, height: 48, zIndex: 2 }} />
+          <img src={prop('race-announcer-speakers')} alt="" draggable={false} style={{ position: 'absolute', right: 40, top: 2, height: 60, zIndex: 2 }} />
+          <img src={prop('checkered-banner')} alt="" draggable={false} style={{ position: 'absolute', right: 120, top: 14, height: 36, zIndex: 2 }} />
+
           {/* 15레인 직선 트랙 */}
           <div style={{ position: 'absolute', left: 48, right: 48, top: 104, height: 563, borderTop: '4px solid #FFFFFF', borderBottom: '4px solid #FFFFFF', background: `repeating-linear-gradient(to bottom, ${color.track} 0 35px, #FFFFFF 35px 37px)` }} />
           <div className={go ? 'cr-scroll' : ''} style={{ position: 'absolute', left: 48, right: 48, top: 108, height: 555, background: 'repeating-linear-gradient(to right, transparent 0 236px, rgba(255,255,255,0.55) 236px 240px)' }} />
@@ -143,12 +148,14 @@ export function StartScene({ onDone, accent = color.accent }: Props) {
 
           {(pre || marks) && <Callout key="ready" size={44} height={96} border={5}>Ready</Callout>}
           {set && <Callout key="set" size={64} height={120} border={6}>Set</Callout>}
+          {!go && <img src={prop('race-start-lights')} alt="" draggable={false} className={set ? 'cr-blink' : undefined} style={{ position: 'absolute', left: 'calc(50% - 60px)', top: '22%', width: 120, zIndex: 7, pointerEvents: 'none' }} />}
           {go && (
             <>
               <div className="cr-flash" style={{ position: 'absolute', inset: 0, background: '#FFFFFF', pointerEvents: 'none', zIndex: 8 }} />
-              <div className="cr-bang" style={{ position: 'absolute', left: '50%', top: '20%', width: 300, height: 120, borderRadius: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 72, fontWeight: 900, fontStyle: 'italic', background: accent, color: '#FFFFFF', boxShadow: '0 16px 40px rgba(0,0,0,0.3)', zIndex: 9, pointerEvents: 'none' }}>
-                GO!
+              <div className="cr-bang" style={{ position: 'absolute', left: '50%', top: '16%', width: 300, height: 264, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9, pointerEvents: 'none' }}>
+                <img src={prop('countdown-board-go')} alt="GO!" draggable={false} style={{ width: 300, filter: 'drop-shadow(0 16px 24px rgba(0,0,0,0.3))' }} />
               </div>
+              <img src={prop('race-smoke-purple-yellow')} alt="" draggable={false} style={{ position: 'absolute', left: 120, top: 300, width: 220, zIndex: 6, pointerEvents: 'none', opacity: 0.9 }} />
             </>
           )}
 

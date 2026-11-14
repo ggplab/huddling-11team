@@ -1,3 +1,4 @@
+import { prop } from '../assets';
 import { penguinFor } from '../assets';
 import { CONFIG } from '../config';
 import { rankMap, sortedTeams } from '../lib/format';
@@ -60,14 +61,7 @@ export function Track({ scores, finished, boost, slip, selected, running, onSele
           <path className={'cr-lane' + flowCls} d={TRACK_PATH} fill="none" stroke="#FFFFFF" strokeOpacity={0.55} strokeWidth={3} strokeDasharray="14 46" />
 
           {FLAGS.map(([x, y], k) => (
-            <g key={k} transform={`translate(${x} ${y})`}>
-              <line x1={0} y1={0} x2={0} y2={26} stroke="#8A8A85" strokeWidth={2} />
-              <circle cx={0} cy={27} r={2.5} fill="#8A8A85" />
-              <rect x={1} y={0} width={7} height={6} fill="#E8564A" />
-              <rect x={8} y={0} width={7} height={6} fill="#FFFFFF" />
-              <rect x={1} y={6} width={7} height={6} fill="#FFFFFF" />
-              <rect x={8} y={6} width={7} height={6} fill="#E8564A" />
-            </g>
+            <image key={k} href={prop('github-flag-stand-small')} x={x - 6} y={y - 8} width={26} height={36} />
           ))}
 
           {[0, 1, 2, 3, 4].map((k) => {
@@ -91,7 +85,13 @@ export function Track({ scores, finished, boost, slip, selected, running, onSele
           <rect x={897} y={525} width={16} height={130} fill="url(#crChk)" />
         </svg>
 
-        <div style={{ position: 'absolute', left: 210, top: 6, fontSize: 14, fontWeight: 900, letterSpacing: '0.08em', color: '#FFFFFF', background: color.ink, padding: '2px 10px', borderRadius: 4 }}>START</div>
+        <img src={prop('start-sign-purple')} alt="START" draggable={false} style={{ position: 'absolute', left: 200, top: 2, width: 96, pointerEvents: 'none' }} />
+        <img src={prop('checkered-flag')} alt="" draggable={false} style={{ position: 'absolute', left: 918, top: 470, width: 52, pointerEvents: 'none' }} />
+        <img src={prop('race-announcer-speakers')} alt="" draggable={false} style={{ position: 'absolute', left: 250, top: 196, width: 54, pointerEvents: 'none' }} />
+        <img src={prop('race-barrier-long')} alt="" draggable={false} style={{ position: 'absolute', left: 720, top: 436, width: 96, pointerEvents: 'none' }} />
+        <img src={prop('traffic-cone-orange')} alt="" draggable={false} style={{ position: 'absolute', left: 832, top: 446, width: 24, pointerEvents: 'none' }} />
+        <img src={prop('traffic-cone-purple')} alt="" draggable={false} style={{ position: 'absolute', left: 860, top: 452, width: 20, pointerEvents: 'none' }} />
+        <img src={prop('race-barrier-short')} alt="" draggable={false} style={{ position: 'absolute', left: 120, top: 672, width: 60, pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', left: 760, top: 660, fontSize: 22, fontWeight: 900, letterSpacing: '0.06em', color: '#3B3FBF', background: '#FFFFFF', border: '3px solid #3B3FBF', padding: '2px 18px', borderRadius: '10px 10px 4px 4px', boxShadow: '0 3px 0 #2A2D8F' }}>FINISH</div>
         {checkpoints.map((c, k) => (
           <div key={k} style={{ position: 'absolute', left: Math.round(c.lx), top: Math.round(c.ly), width: 40, textAlign: 'center', fontSize: 12, fontWeight: 700, color: color.text, background: '#FFFFFF', borderRadius: 4 }}>
