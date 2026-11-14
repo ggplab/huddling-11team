@@ -1,3 +1,4 @@
+import { penguinFor } from '../assets';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CONFIG } from '../config';
 import { btnOutline, btnSolid, Header } from '../components/Header';
@@ -19,8 +20,6 @@ const START_X = 276;
  * A. 출발 장면
  * Ready(스타팅 블록에 자리) → Set(엉덩이를 들고 대기) → 랜덤 정적 → GO!(동시 출발) → 레이스 화면
  */
-const PENGUINS = ['/images/race/penguin-classic.png', '/images/race/penguin-baby.png', '/images/race/penguin-sporty.png', '/images/race/penguin-developer.png'];
-
 export function StartScene({ onDone, accent = color.accent }: Props) {
   const [phase, setPhase] = useState<Phase>('pre');
   const [cta, setCta] = useState(false);
@@ -132,7 +131,7 @@ export function StartScene({ onDone, accent = color.accent }: Props) {
                       animationDelay: go ? `${(i % 4) * 0.05}s` : undefined,
                     }}
                   >
-                    <img src={PENGUINS[i % PENGUINS.length]} alt="" draggable={false} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                    <img src={penguinFor(i)} alt="" draggable={false} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                     <span style={{ position: 'absolute', right: -6, bottom: -4, minWidth: 20, height: 20, borderRadius: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 900, color: '#FFFFFF', background: teamColor(i, mine, accent), border: isMine ? `3px solid ${color.myTeamRing}` : '2px solid #FFFFFF' }}>
                       {i + 1}
                     </span>

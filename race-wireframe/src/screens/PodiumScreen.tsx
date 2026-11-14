@@ -1,3 +1,4 @@
+import { penguinFor } from '../assets';
 import { CONFIG } from '../config';
 import { btnOutline, btnSolid, Header } from '../components/Header';
 import { color, teamColor } from '../theme';
@@ -87,8 +88,11 @@ export function PodiumScreen({ result = MOCK_RESULT, onReplay, onBackToRace, acc
                         <circle cx={28} cy={2} r={3} fill="#E8564A" />
                       </svg>
                     )}
-                    <div style={{ width: big, height: big, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: place === 1 ? 38 : 32, fontWeight: 900, color: '#FFFFFF', background: teamColor(t.teamIndex, mine, accent), border: `5px solid ${t.teamIndex === mine ? color.myTeamRing : '#FFFFFF'}`, boxShadow: '0 6px 16px rgba(0,0,0,0.3)' }}>
-                      {t.teamIndex + 1}
+                    <div style={{ position: 'relative', width: big * 1.5, height: big * 1.5, filter: 'drop-shadow(0 6px 10px rgba(0,0,0,0.3))' }}>
+                      <img src={penguinFor(t.teamIndex)} alt="" draggable={false} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                      <span style={{ position: 'absolute', right: -4, bottom: 0, minWidth: 40, height: 40, borderRadius: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 900, color: '#FFFFFF', background: teamColor(t.teamIndex, mine, accent), border: `4px solid ${t.teamIndex === mine ? color.myTeamRing : '#FFFFFF'}` }}>
+                        {t.teamIndex + 1}
+                      </span>
                     </div>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '8px 0 10px' }}>
@@ -141,6 +145,7 @@ export function PodiumScreen({ result = MOCK_RESULT, onReplay, onBackToRace, acc
                 return (
                   <div key={t.teamIndex} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 10px', borderRadius: 6, background: isMine ? accent : color.inkRow }}>
                     <span style={{ width: 26, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 900, color: isMine ? '#FFFFFF' : '#B5B5AF' }}>{k + 4}</span>
+                    <img src={penguinFor(t.teamIndex)} alt="" draggable={false} style={{ width: 28, height: 28, objectFit: 'contain' }} />
                     <span style={{ fontSize: 13, fontWeight: 700 }}>{t.teamIndex + 1}팀</span>
                     <span style={{ flexGrow: 1 }} />
                     <span style={{ fontSize: 12, color: '#C9C9C3', fontVariantNumeric: 'tabular-nums' }}>{Math.min(100, Math.round((t.score / goal) * 100))}%</span>

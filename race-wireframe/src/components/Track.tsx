@@ -1,3 +1,4 @@
+import { penguinFor } from '../assets';
 import { CONFIG } from '../config';
 import { rankMap, sortedTeams } from '../lib/format';
 import { pointAt, runnerPosition, TRACK, TRACK_PATH } from '../lib/track';
@@ -161,7 +162,7 @@ export function Track({ scores, finished, boost, slip, selected, running, onSele
                   filter: isSel ? 'drop-shadow(0 0 6px #FFFFFF) drop-shadow(0 4px 8px rgba(0,0,0,0.45))' : 'drop-shadow(0 2px 3px rgba(0,0,0,0.35))',
                 }}
               >
-                <img src={PENGUINS[i % PENGUINS.length]} alt="" draggable={false} style={{ width: '100%', height: '100%', objectFit: 'contain', pointerEvents: 'none', transform: faceLeft ? 'scaleX(-1)' : undefined, transition: 'transform 0.3s' }} />
+                <img src={penguinFor(i)} alt="" draggable={false} style={{ width: '100%', height: '100%', objectFit: 'contain', pointerEvents: 'none', transform: faceLeft ? 'scaleX(-1)' : undefined, transition: 'transform 0.3s' }} />
                 <span
                   style={{
                     position: 'absolute',
@@ -196,8 +197,6 @@ export function Track({ scores, finished, boost, slip, selected, running, onSele
     </div>
   );
 }
-
-const PENGUINS = ['/images/race/penguin-classic.png', '/images/race/penguin-baby.png', '/images/race/penguin-sporty.png', '/images/race/penguin-developer.png'];
 
 function Sign({ left, top, bg, label, checkerSide }: { left: number; top: number; bg: string; label: string; checkerSide: 'left' | 'right' }) {
   const checker = <div style={{ width: 22, height: '100%', flexShrink: 0, background: 'repeating-conic-gradient(#1B1B1A 0% 25%, #FFFFFF 0% 50%) 0 0 / 11px 11px' }} />;
