@@ -38,6 +38,7 @@ export default function Home() {
 
   return (
     <section className="space-y-3">
+      <a href="/race/" className="block rounded-card bg-dev px-3 py-2 text-center text-sm font-bold text-white">대형 화면 중계판 열기 (출발, 레이스 중계, 시상식)</a>
       <TopBar commits={commits} merges={merges} />
       <div className="grid gap-3 lg:grid-cols-[250px_minmax(0,1fr)_320px]">
         <RankTower teams={ranked} selected={selectedId} onSelect={pick} moved={moved} />
