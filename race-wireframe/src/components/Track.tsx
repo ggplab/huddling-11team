@@ -120,7 +120,8 @@ export function Track({ scores, finished, boost, slip, selected, running, onSele
           const isSel = selected === i;
           const dim = selected !== null && !isSel;
           const done = finished.includes(i);
-          const size = isSel ? 44 : isMine ? 38 : 32;
+          const size = isSel ? 64 : isMine ? 56 : 46;
+          const faceLeft = pointAt(Math.min(1, score / goal)).dx < 0;
           let tag = '';
           let tagBg = '';
           if (done) [tag, tagBg] = ['완주', color.ink];
@@ -160,7 +161,7 @@ export function Track({ scores, finished, boost, slip, selected, running, onSele
                   filter: isSel ? 'drop-shadow(0 0 6px #FFFFFF) drop-shadow(0 4px 8px rgba(0,0,0,0.45))' : 'drop-shadow(0 2px 3px rgba(0,0,0,0.35))',
                 }}
               >
-                <img src={PENGUINS[i % PENGUINS.length]} alt="" draggable={false} style={{ width: '100%', height: '100%', objectFit: 'contain', pointerEvents: 'none' }} />
+                <img src={PENGUINS[i % PENGUINS.length]} alt="" draggable={false} style={{ width: '100%', height: '100%', objectFit: 'contain', pointerEvents: 'none', transform: faceLeft ? 'scaleX(-1)' : undefined, transition: 'transform 0.3s' }} />
                 <span
                   style={{
                     position: 'absolute',

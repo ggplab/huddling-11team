@@ -19,6 +19,8 @@ const START_X = 276;
  * A. 출발 장면
  * Ready(스타팅 블록에 자리) → Set(엉덩이를 들고 대기) → 랜덤 정적 → GO!(동시 출발) → 레이스 화면
  */
+const PENGUINS = ['/images/race/penguin-classic.png', '/images/race/penguin-baby.png', '/images/race/penguin-sporty.png', '/images/race/penguin-developer.png'];
+
 export function StartScene({ onDone, accent = color.accent }: Props) {
   const [phase, setPhase] = useState<Phase>('pre');
   const [cta, setCta] = useState(false);
@@ -90,7 +92,7 @@ export function StartScene({ onDone, accent = color.accent }: Props) {
           {Array.from({ length: CONFIG.teamCount }, (_, i) => {
             const isMine = i === mine;
             const cy = 104 + 4 + i * 37 + 17;
-            const size = isMine ? 32 : 28;
+            const size = isMine ? 56 : 48;
             const x = go ? DASH[i] : pre ? -70 : set ? -4 : 0;
             const bodyCls = go ? 'cr-run' : set ? 'cr-set' : marks ? 'cr-marks' : '';
             return (
@@ -117,7 +119,6 @@ export function StartScene({ onDone, accent = color.accent }: Props) {
                       top: -size / 2,
                       width: size,
                       height: size,
-                      borderRadius: '50%',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -127,13 +128,14 @@ export function StartScene({ onDone, accent = color.accent }: Props) {
                       zIndex: 2,
                       transformOrigin: '50% 100%',
                       transition: 'transform 0.4s ease-out',
-                      background: teamColor(i, mine, accent),
-                      border: isMine ? `3px solid ${color.myTeamRing}` : '2px solid #FFFFFF',
-                      boxShadow: '0 2px 6px rgba(0,0,0,0.35)',
+                      filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.35))',
                       animationDelay: go ? `${(i % 4) * 0.05}s` : undefined,
                     }}
                   >
-                    {i + 1}
+                    <img src={PENGUINS[i % PENGUINS.length]} alt="" draggable={false} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                    <span style={{ position: 'absolute', right: -6, bottom: -4, minWidth: 20, height: 20, borderRadius: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 900, color: '#FFFFFF', background: teamColor(i, mine, accent), border: isMine ? `3px solid ${color.myTeamRing}` : '2px solid #FFFFFF' }}>
+                      {i + 1}
+                    </span>
                   </div>
                 </div>
               </div>

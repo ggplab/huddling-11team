@@ -87,18 +87,25 @@ export function useRace({ scenario, speed, selected }: Options) {
     return () => window.clearInterval(id);
   }, [isLive, running, mult, step]);
 
-  // 배너는 CONFIG.bannerMs 뒤 자동으로 사라진다 (케이스 화면에서는 유지)
-  const banner = state.banner;
+  // 중계 자막: 배속과 상관없이 실제 시간으로 CONFIG.bannerMs 동안 보인다.
+  // 보이는 동안 새로 생긴 배너는 건너뛴다(배속을 올려도 자막을 읽을 수 있게).
+  const [shown, setShown] = useState<RaceState['banner']>(null);
+  const lastShown = useRef<RaceState['banner']>(null);
   useEffect(() => {
-    if (!isLive || !banner) return;
-    const id = window.setTimeout(() => {
-      setState((prev) => (prev.banner === banner ? { ...prev, banner: null } : prev));
-    }, CONFIG.bannerMs / Math.min(mult, 2));
+    if (isLive && state.banner && !shown && state.banner !== lastShown.current) {
+      lastShown.current = state.banner;
+      setShown(state.banner);
+    }
+  }, [isLive, state.banner, shown]);
+  useEffect(() => {
+    if (!shown) return;
+    const id = window.setTimeout(() => setShown(null), CONFIG.bannerMs);
     return () => window.clearTimeout(id);
-  }, [isLive, banner, mult]);
+  }, [shown]);
+  const banner = isLive ? shown : state.banner;
 
   const toggleRunning = useCallback(() => setRunning((r) => !r), []);
   const start = history.current[0].elapsed;
 
-  return { state, running: isLive ? running : true, toggleRunning, isLive, mult, setMult, seek, start };
+  return { state, banner, running: isLive ? running : true, toggleRunning, isLive, mult, setMult, seek, start };
 }

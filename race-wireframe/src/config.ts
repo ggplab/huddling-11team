@@ -10,7 +10,7 @@ export const CONFIG = {
   /** 시뮬레이션 시작 시각 표시용 (시 단위) */
   clockStartHour: 10,
   /** 이벤트 배너 노출 시간(ms) */
-  bannerMs: 4000,
+  bannerMs: 6500,
   /** 출발 후 레이스 화면으로 넘어가기까지(ms) */
   startToRaceMs: 3500,
   /** 파트(역할) 이름. 커밋 작성자를 파트에 매핑해서 '파트별 주행 기록'을 만든다 */

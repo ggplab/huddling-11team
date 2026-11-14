@@ -21,7 +21,7 @@ interface Props {
 /** B. 레이스 중계 화면 (순위 타워, 트랙, 파트별 주행 기록, 중계 팝오버) */
 export function RaceScreen({ scenario = 'live', speed = 'normal', onFinish }: Props) {
   const [selected, setSelected] = useState<number | null>(null);
-  const { state, running, toggleRunning, isLive, mult, setMult, seek, start } = useRace({ scenario, speed, selected });
+  const { state, banner, running, toggleRunning, isLive, mult, setMult, seek, start } = useRace({ scenario, speed, selected });
   const toggleSelect = (i: number) => setSelected((cur) => (cur === i ? null : i));
 
   const stat = (label: string, value: string | number) => (
@@ -90,7 +90,7 @@ export function RaceScreen({ scenario = 'live', speed = 'normal', onFinish }: Pr
         </aside>
       </div>
 
-      {state.banner && <BroadcastBanner key={`${state.banner.kind}-${state.banner.team}-${state.banner.time}`} banner={state.banner} live={isLive} />}
+      {banner && <BroadcastBanner key={`${banner.kind}-${banner.team}-${banner.time}`} banner={banner} live={isLive} />}
     </div>
   );
 }
