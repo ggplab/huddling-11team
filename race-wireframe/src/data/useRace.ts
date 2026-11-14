@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CONFIG, SPEED_EVERY, type Speed } from '../config';
-import { createScenarioState, simulateEvent } from './simulation';
 import { blendReal, loadSnapshot } from './realData';
+import { createScenarioState, simulateEvent } from './simulation';
 import type { RaceState, Scenario } from './types';
 
 interface Options {
@@ -10,51 +10,82 @@ interface Options {
   selected: number | null;
 }
 
+export const MULTS = [1, 2, 5, 10] as const;
+
 /**
  * 레이스 상태 훅.
- * - scenario === 'live': 1초마다 시계가 가고, speed 간격마다 이벤트가 하나 생긴다.
+ * - scenario === 'live': 틱마다 시계가 1초 가고, speed 간격마다 이벤트가 하나 생긴다.
+ *   배속(mult)은 틱 간격을 줄인다. 지나간 상태는 history 에 쌓여 재생바로 앞뒤 이동이 된다.
  * - 그 외: 해당 팝오버 케이스로 고정된 화면 (시간 정지, 배너 유지).
- *
- * 실제 데이터로 바꿀 때는 이 훅 안의 simulateEvent 호출 부분을
- * data/github.ts 의 폴링 결과로 교체하면 된다. 화면 컴포넌트는 RaceState만 본다.
  */
 export function useRace({ scenario, speed, selected }: Options) {
   const [state, setState] = useState<RaceState>(() => createScenarioState(scenario));
   const [running, setRunning] = useState(true);
+  const [mult, setMult] = useState<number>(1);
   const selectedRef = useRef(selected);
   selectedRef.current = selected;
+  const history = useRef<RaceState[]>([state]);
+  const cursor = useRef(0);
 
   const isLive = scenario === 'live';
+  const every = SPEED_EVERY[speed];
+
+  const step = useCallback(
+    (prev: RaceState): RaceState => {
+      const tick = prev.tick + 1;
+      const base = { ...prev, tick, elapsed: prev.elapsed + 1, banner: null };
+      if (tick % every !== 0) return base;
+      return simulateEvent(base, { goal: CONFIG.goal, myTeam: CONFIG.myTeam, selected: selectedRef.current });
+    },
+    [every],
+  );
+
+  const reset = useCallback((s: RaceState) => {
+    history.current = [s];
+    cursor.current = 0;
+    setState(s);
+  }, []);
 
   useEffect(() => {
-    setState(createScenarioState(scenario));
-  }, [scenario]);
+    reset(createScenarioState(scenario));
+  }, [scenario, reset]);
 
   // 실제 수집본을 한 번 불러와 출발 상태에 섞는다(live 일 때만)
   useEffect(() => {
     if (scenario !== 'live') return;
     let alive = true;
     void loadSnapshot().then((snap) => {
-      if (alive && snap) setState((prev) => blendReal(prev, snap));
+      if (alive && snap) reset(blendReal(createScenarioState('live'), snap));
     });
     return () => {
       alive = false;
     };
-  }, [scenario]);
+  }, [scenario, reset]);
+
+  /** 재생바: 경과 시간(초)으로 이동한다. 아직 안 간 곳이면 그만큼 미리 계산한다. */
+  const seek = useCallback(
+    (elapsed: number) => {
+      const h = history.current;
+      const target = Math.max(0, Math.min(CONFIG.durationSec - h[0].elapsed, Math.round(elapsed - h[0].elapsed)));
+      while (h.length <= target) h.push(step(h[h.length - 1]));
+      cursor.current = target;
+      setState({ ...h[target], banner: null });
+    },
+    [step],
+  );
 
   useEffect(() => {
     if (!isLive || !running) return;
-    const every = SPEED_EVERY[speed];
     const id = window.setInterval(() => {
-      setState((prev) => {
-        const tick = prev.tick + 1;
-        const base = { ...prev, tick, elapsed: prev.elapsed + 1 };
-        if (tick % every !== 0) return base;
-        return simulateEvent(base, { goal: CONFIG.goal, myTeam: CONFIG.myTeam, selected: selectedRef.current });
-      });
-    }, 1000);
+      const h = history.current;
+      if (h[cursor.current].elapsed >= CONFIG.durationSec) return;
+      const next = cursor.current + 1;
+      if (h.length <= next) h.push(step(h[h.length - 1]));
+      cursor.current = next;
+      setState(h[next]);
+    }, 1000 / mult);
     return () => window.clearInterval(id);
-  }, [isLive, running, speed]);
+  }, [isLive, running, mult, step]);
 
   // 배너는 CONFIG.bannerMs 뒤 자동으로 사라진다 (케이스 화면에서는 유지)
   const banner = state.banner;
@@ -62,11 +93,12 @@ export function useRace({ scenario, speed, selected }: Options) {
     if (!isLive || !banner) return;
     const id = window.setTimeout(() => {
       setState((prev) => (prev.banner === banner ? { ...prev, banner: null } : prev));
-    }, CONFIG.bannerMs);
+    }, CONFIG.bannerMs / Math.min(mult, 2));
     return () => window.clearTimeout(id);
-  }, [isLive, banner]);
+  }, [isLive, banner, mult]);
 
   const toggleRunning = useCallback(() => setRunning((r) => !r), []);
+  const start = history.current[0].elapsed;
 
-  return { state, running: isLive ? running : true, toggleRunning, isLive };
+  return { state, running: isLive ? running : true, toggleRunning, isLive, mult, setMult, seek, start };
 }

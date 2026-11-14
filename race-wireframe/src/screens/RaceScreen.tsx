@@ -8,7 +8,7 @@ import { RankingTower } from '../components/RankingTower';
 import { TeamPanel } from '../components/TeamPanel';
 import { Track } from '../components/Track';
 import type { Scenario } from '../data/types';
-import { useRace } from '../data/useRace';
+import { MULTS, useRace } from '../data/useRace';
 import { hms } from '../lib/format';
 import { color } from '../theme';
 
@@ -21,7 +21,7 @@ interface Props {
 /** B. 레이스 중계 화면 (순위 타워, 트랙, 파트별 주행 기록, 중계 팝오버) */
 export function RaceScreen({ scenario = 'live', speed = 'normal', onFinish }: Props) {
   const [selected, setSelected] = useState<number | null>(null);
-  const { state, running, toggleRunning, isLive } = useRace({ scenario, speed, selected });
+  const { state, running, toggleRunning, isLive, mult, setMult, seek, start } = useRace({ scenario, speed, selected });
   const toggleSelect = (i: number) => setSelected((cur) => (cur === i ? null : i));
 
   const stat = (label: string, value: string | number) => (
@@ -34,6 +34,15 @@ export function RaceScreen({ scenario = 'live', speed = 'normal', onFinish }: Pr
   return (
     <div className="cr-in" style={{ position: 'relative', width: 1600, height: 900, background: color.bg, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       <Header title="커밋 레이스" subtitle="커밋할수록 앞으로, 해커톤 실시간 현황">
+        {isLive && (
+          <div style={{ display: 'flex', gap: 4 }}>
+            {MULTS.map((m) => (
+              <button key={m} type="button" onClick={() => setMult(m)} style={{ ...btnOutline, height: 36, padding: '0 10px', background: mult === m ? color.ink : color.surface, color: mult === m ? '#FFFFFF' : color.text }}>
+                {m}배
+              </button>
+            ))}
+          </div>
+        )}
         {isLive && (
           <button type="button" onClick={toggleRunning} style={btnOutline}>
             {running ? '일시정지' : '재생'}
@@ -55,6 +64,11 @@ export function RaceScreen({ scenario = 'live', speed = 'normal', onFinish }: Pr
           {stat('전체 PR 머지', state.prs)}
         </div>
       </Header>
+      {isLive && (
+        <div style={{ padding: '8px 32px 0' }}>
+          <input type="range" aria-label="재생 위치" min={start} max={CONFIG.durationSec} step={1} value={state.elapsed} onChange={(e) => seek(Number(e.target.value))} style={{ width: '100%', accentColor: color.ink }} />
+        </div>
+      )}
 
       <div style={{ flexGrow: 1, minHeight: 0, display: 'flex', gap: 20, padding: '20px 24px 24px' }}>
         <RankingTower scores={state.scores} finished={state.finished} moves={state.moves} selected={selected} onSelect={toggleSelect} />
