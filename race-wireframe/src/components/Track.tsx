@@ -149,28 +149,42 @@ export function Track({ scores, finished, boost, slip, selected, running, onSele
                 aria-pressed={isSel}
                 style={{
                   position: 'absolute',
-                  left: -size / 2,
-                  top: -size / 2,
-                  width: size,
-                  height: size,
+                  left: -size * 0.75,
+                  top: -size * 1.2,
+                  width: size * 1.5,
+                  height: size * 1.5,
                   padding: 0,
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  border: 'none',
+                  background: 'transparent',
                   cursor: 'pointer',
-                  fontSize: isSel ? 17 : isMine ? 15 : 13,
-                  fontWeight: 900,
-                  color: '#FFFFFF',
-                  background: teamColor(i, mine, accent),
-                  border: isSel ? `4px solid ${color.ink}` : isMine ? `3px solid ${color.myTeamRing}` : '2px solid #FFFFFF',
-                  boxShadow: isSel ? '0 0 0 4px #FFFFFF, 0 4px 12px rgba(0,0,0,0.4)' : '0 2px 6px rgba(0,0,0,0.35)',
+                  filter: isSel ? 'drop-shadow(0 0 6px #FFFFFF) drop-shadow(0 4px 8px rgba(0,0,0,0.45))' : 'drop-shadow(0 2px 3px rgba(0,0,0,0.35))',
                 }}
               >
-                {i + 1}
+                <img src={PENGUINS[i % PENGUINS.length]} alt="" draggable={false} style={{ width: '100%', height: '100%', objectFit: 'contain', pointerEvents: 'none' }} />
+                <span
+                  style={{
+                    position: 'absolute',
+                    right: -4,
+                    bottom: -2,
+                    minWidth: isSel ? 26 : isMine ? 24 : 20,
+                    height: isSel ? 26 : isMine ? 24 : 20,
+                    borderRadius: 999,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: isSel ? 14 : isMine ? 13 : 11,
+                    fontWeight: 900,
+                    color: '#FFFFFF',
+                    background: teamColor(i, mine, accent),
+                    border: isSel ? `3px solid ${color.ink}` : isMine ? `3px solid ${color.myTeamRing}` : '2px solid #FFFFFF',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.4)',
+                  }}
+                >
+                  {i + 1}
+                </span>
               </button>
               {tag && (
-                <div style={{ position: 'absolute', left: -30, top: -size / 2 - 22, width: 60, textAlign: 'center', fontSize: 11, fontWeight: 700, color: '#FFFFFF', background: tagBg, borderRadius: 4, padding: '1px 0', pointerEvents: 'none' }}>
+                <div style={{ position: 'absolute', left: -30, top: -size * 1.2 - 20, width: 60, textAlign: 'center', fontSize: 11, fontWeight: 700, color: '#FFFFFF', background: tagBg, borderRadius: 4, padding: '1px 0', pointerEvents: 'none' }}>
                   {tag}
                 </div>
               )}
@@ -181,6 +195,8 @@ export function Track({ scores, finished, boost, slip, selected, running, onSele
     </div>
   );
 }
+
+const PENGUINS = ['/images/race/penguin-classic.png', '/images/race/penguin-baby.png', '/images/race/penguin-sporty.png', '/images/race/penguin-developer.png'];
 
 function Sign({ left, top, bg, label, checkerSide }: { left: number; top: number; bg: string; label: string; checkerSide: 'left' | 'right' }) {
   const checker = <div style={{ width: 22, height: '100%', flexShrink: 0, background: 'repeating-conic-gradient(#1B1B1A 0% 25%, #FFFFFF 0% 50%) 0 0 / 11px 11px' }} />;
