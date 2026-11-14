@@ -1,0 +1,630 @@
+{
+  "source": "https://www.figma.com/design/BdKxgMVSZi3BnovHsktZrx",
+  "assets": [
+    {
+      "path": "code-previews/live-feed.png",
+      "size": [
+        1512,
+        982
+      ],
+      "bytes": 57703
+    },
+    {
+      "path": "code-previews/ranking-box.png",
+      "size": [
+        1512,
+        982
+      ],
+      "bytes": 37327
+    },
+    {
+      "path": "penguins/png/penguin-design-level-1.png",
+      "size": [
+        235,
+        166
+      ],
+      "bytes": 15012,
+      "figmaNodeId": "2:1747"
+    },
+    {
+      "path": "penguins/png/penguin-design-level-2.png",
+      "size": [
+        235,
+        166
+      ],
+      "bytes": 16811,
+      "figmaNodeId": "2:1778"
+    },
+    {
+      "path": "penguins/png/penguin-design-level-3.png",
+      "size": [
+        238,
+        166
+      ],
+      "bytes": 17850,
+      "figmaNodeId": "2:1775"
+    },
+    {
+      "path": "penguins/png/penguin-design-level-4.png",
+      "size": [
+        235,
+        166
+      ],
+      "bytes": 20501,
+      "figmaNodeId": "2:1776"
+    },
+    {
+      "path": "penguins/png/penguin-design-level-5.png",
+      "size": [
+        238,
+        166
+      ],
+      "bytes": 23394,
+      "figmaNodeId": "2:1777"
+    },
+    {
+      "path": "penguins/png/penguin-development-level-1.png",
+      "size": [
+        235,
+        166
+      ],
+      "bytes": 13989,
+      "figmaNodeId": "2:1743"
+    },
+    {
+      "path": "penguins/png/penguin-development-level-2.png",
+      "size": [
+        235,
+        166
+      ],
+      "bytes": 16994,
+      "figmaNodeId": "2:1744"
+    },
+    {
+      "path": "penguins/png/penguin-development-level-3.png",
+      "size": [
+        238,
+        166
+      ],
+      "bytes": 19323,
+      "figmaNodeId": "2:1745"
+    },
+    {
+      "path": "penguins/png/penguin-development-level-4.png",
+      "size": [
+        235,
+        166
+      ],
+      "bytes": 19417,
+      "figmaNodeId": "2:1746"
+    },
+    {
+      "path": "penguins/png/penguin-development-level-5.png",
+      "size": [
+        234,
+        184
+      ],
+      "bytes": 23573,
+      "figmaNodeId": "2:1644"
+    },
+    {
+      "path": "penguins/png/penguin-documentation-level-1.png",
+      "size": [
+        235,
+        166
+      ],
+      "bytes": 14134,
+      "figmaNodeId": "2:1748"
+    },
+    {
+      "path": "penguins/png/penguin-documentation-level-2.png",
+      "size": [
+        235,
+        166
+      ],
+      "bytes": 16806,
+      "figmaNodeId": "2:1749"
+    },
+    {
+      "path": "penguins/png/penguin-documentation-level-3.png",
+      "size": [
+        238,
+        166
+      ],
+      "bytes": 18127,
+      "figmaNodeId": "2:1779"
+    },
+    {
+      "path": "penguins/png/penguin-documentation-level-4.png",
+      "size": [
+        235,
+        166
+      ],
+      "bytes": 19397,
+      "figmaNodeId": "2:1774"
+    },
+    {
+      "path": "penguins/png/penguin-documentation-level-5.png",
+      "size": [
+        234,
+        184
+      ],
+      "bytes": 16139,
+      "figmaNodeId": "2:1773"
+    },
+    {
+      "path": "penguins/png/penguin-planning-level-1.png",
+      "size": [
+        235,
+        166
+      ],
+      "bytes": 14617,
+      "figmaNodeId": "2:1780"
+    },
+    {
+      "path": "penguins/png/penguin-planning-level-2.png",
+      "size": [
+        544,
+        384
+      ],
+      "bytes": 6269,
+      "figmaNodeId": "2:1694"
+    },
+    {
+      "path": "penguins/png/penguin-planning-level-3.png",
+      "size": [
+        238,
+        166
+      ],
+      "bytes": 21656,
+      "figmaNodeId": "2:1781"
+    },
+    {
+      "path": "penguins/png/penguin-planning-level-4.png",
+      "size": [
+        235,
+        166
+      ],
+      "bytes": 22678,
+      "figmaNodeId": "2:1782"
+    },
+    {
+      "path": "penguins/png/penguin-planning-level-5.png",
+      "size": [
+        238,
+        166
+      ],
+      "bytes": 26457,
+      "figmaNodeId": "2:1750"
+    },
+    {
+      "path": "penguins/svg/penguin-design-level-1.svg",
+      "size": [
+        "235",
+        "166"
+      ],
+      "bytes": 36692,
+      "figmaNodeId": "2:1747"
+    },
+    {
+      "path": "penguins/svg/penguin-design-level-2.svg",
+      "size": [
+        "235",
+        "166"
+      ],
+      "bytes": 41105,
+      "figmaNodeId": "2:1778"
+    },
+    {
+      "path": "penguins/svg/penguin-design-level-3.svg",
+      "size": [
+        "238",
+        "166"
+      ],
+      "bytes": 41209,
+      "figmaNodeId": "2:1775"
+    },
+    {
+      "path": "penguins/svg/penguin-design-level-4.svg",
+      "size": [
+        "235",
+        "166"
+      ],
+      "bytes": 48672,
+      "figmaNodeId": "2:1776"
+    },
+    {
+      "path": "penguins/svg/penguin-design-level-5.svg",
+      "size": [
+        "238",
+        "166"
+      ],
+      "bytes": 54494,
+      "figmaNodeId": "2:1777"
+    },
+    {
+      "path": "penguins/svg/penguin-development-level-1.svg",
+      "size": [
+        "235",
+        "166"
+      ],
+      "bytes": 34271,
+      "figmaNodeId": "2:1743"
+    },
+    {
+      "path": "penguins/svg/penguin-development-level-2.svg",
+      "size": [
+        "235",
+        "166"
+      ],
+      "bytes": 41579,
+      "figmaNodeId": "2:1744"
+    },
+    {
+      "path": "penguins/svg/penguin-development-level-3.svg",
+      "size": [
+        "238",
+        "166"
+      ],
+      "bytes": 45172,
+      "figmaNodeId": "2:1745"
+    },
+    {
+      "path": "penguins/svg/penguin-development-level-4.svg",
+      "size": [
+        "235",
+        "166"
+      ],
+      "bytes": 46427,
+      "figmaNodeId": "2:1746"
+    },
+    {
+      "path": "penguins/svg/penguin-development-level-5.svg",
+      "size": [
+        "234",
+        "184"
+      ],
+      "bytes": 45483,
+      "figmaNodeId": "2:1644"
+    },
+    {
+      "path": "penguins/svg/penguin-documentation-level-1.svg",
+      "size": [
+        "235",
+        "166"
+      ],
+      "bytes": 34512,
+      "figmaNodeId": "2:1748"
+    },
+    {
+      "path": "penguins/svg/penguin-documentation-level-2.svg",
+      "size": [
+        "235",
+        "166"
+      ],
+      "bytes": 41029,
+      "figmaNodeId": "2:1749"
+    },
+    {
+      "path": "penguins/svg/penguin-documentation-level-3.svg",
+      "size": [
+        "238",
+        "166"
+      ],
+      "bytes": 42052,
+      "figmaNodeId": "2:1779"
+    },
+    {
+      "path": "penguins/svg/penguin-documentation-level-4.svg",
+      "size": [
+        "235",
+        "166"
+      ],
+      "bytes": 47169,
+      "figmaNodeId": "2:1774"
+    },
+    {
+      "path": "penguins/svg/penguin-planning-level-1.svg",
+      "size": [
+        "235",
+        "166"
+      ],
+      "bytes": 36092,
+      "figmaNodeId": "2:1780"
+    },
+    {
+      "path": "penguins/svg/penguin-planning-level-2.svg",
+      "size": [
+        "272",
+        "192"
+      ],
+      "bytes": 22960,
+      "figmaNodeId": "2:1694"
+    },
+    {
+      "path": "penguins/svg/penguin-planning-level-3.svg",
+      "size": [
+        "238",
+        "166"
+      ],
+      "bytes": 51349,
+      "figmaNodeId": "2:1781"
+    },
+    {
+      "path": "penguins/svg/penguin-planning-level-4.svg",
+      "size": [
+        "235",
+        "166"
+      ],
+      "bytes": 54479,
+      "figmaNodeId": "2:1782"
+    },
+    {
+      "path": "penguins/svg/penguin-planning-level-5.svg",
+      "size": [
+        "238",
+        "166"
+      ],
+      "bytes": 63169,
+      "figmaNodeId": "2:1750"
+    },
+    {
+      "path": "racing/checkered-banner.png",
+      "size": [
+        195,
+        81
+      ],
+      "bytes": 17849
+    },
+    {
+      "path": "racing/checkered-flag.png",
+      "size": [
+        145,
+        159
+      ],
+      "bytes": 32751
+    },
+    {
+      "path": "racing/countdown-board-1.png",
+      "size": [
+        201,
+        190
+      ],
+      "bytes": 44783
+    },
+    {
+      "path": "racing/countdown-board-2.png",
+      "size": [
+        214,
+        187
+      ],
+      "bytes": 45375
+    },
+    {
+      "path": "racing/countdown-board-3.png",
+      "size": [
+        207,
+        181
+      ],
+      "bytes": 40909
+    },
+    {
+      "path": "racing/countdown-board-go.png",
+      "size": [
+        212,
+        187
+      ],
+      "bytes": 51163
+    },
+    {
+      "path": "racing/github-flag-stand-large.png",
+      "size": [
+        183,
+        183
+      ],
+      "bytes": 36484
+    },
+    {
+      "path": "racing/github-flag-stand-small.png",
+      "size": [
+        139,
+        187
+      ],
+      "bytes": 29732
+    },
+    {
+      "path": "racing/race-announcer-speakers.png",
+      "size": [
+        167,
+        177
+      ],
+      "bytes": 42779
+    },
+    {
+      "path": "racing/race-barrier-long.png",
+      "size": [
+        284,
+        97
+      ],
+      "bytes": 45003
+    },
+    {
+      "path": "racing/race-barrier-short.png",
+      "size": [
+        137,
+        67
+      ],
+      "bytes": 13896
+    },
+    {
+      "path": "racing/race-smoke-purple-yellow.png",
+      "size": [
+        348,
+        228
+      ],
+      "bytes": 93080
+    },
+    {
+      "path": "racing/race-start-lights.png",
+      "size": [
+        145,
+        153
+      ],
+      "bytes": 26856
+    },
+    {
+      "path": "racing/start-arch-checkered.png",
+      "size": [
+        284,
+        181
+      ],
+      "bytes": 70396
+    },
+    {
+      "path": "racing/start-arch-github-flags.png",
+      "size": [
+        796,
+        566
+      ],
+      "bytes": 514937
+    },
+    {
+      "path": "racing/start-arch-lights.png",
+      "size": [
+        292,
+        232
+      ],
+      "bytes": 97359
+    },
+    {
+      "path": "racing/start-sign-purple.png",
+      "size": [
+        312,
+        147
+      ],
+      "bytes": 50364
+    },
+    {
+      "path": "racing/traffic-cone-orange.png",
+      "size": [
+        83,
+        105
+      ],
+      "bytes": 13185
+    },
+    {
+      "path": "racing/traffic-cone-purple.png",
+      "size": [
+        63,
+        89
+      ],
+      "bytes": 10282
+    },
+    {
+      "path": "scenes/penguin-level-progression-adventurer.png",
+      "size": [
+        2172,
+        724
+      ],
+      "bytes": 1785253
+    },
+    {
+      "path": "scenes/penguin-level-progression-coder-blue.png",
+      "size": [
+        2172,
+        724
+      ],
+      "bytes": 1671092
+    },
+    {
+      "path": "scenes/penguin-level-progression-engineer.png",
+      "size": [
+        2172,
+        724
+      ],
+      "bytes": 1751790
+    },
+    {
+      "path": "scenes/penguin-level-progression-laptop-pink.png",
+      "size": [
+        2172,
+        724
+      ],
+      "bytes": 1675847
+    },
+    {
+      "path": "scenes/race-track-stadium-background.png",
+      "size": [
+        1672,
+        941
+      ],
+      "bytes": 1759250
+    },
+    {
+      "path": "scenes/rank-card-bronze-3.png",
+      "size": [
+        677,
+        352
+      ],
+      "bytes": 183825
+    },
+    {
+      "path": "scenes/rank-card-gold-1.png",
+      "size": [
+        728,
+        553
+      ],
+      "bytes": 270690
+    },
+    {
+      "path": "scenes/rank-card-silver-2.png",
+      "size": [
+        677,
+        446
+      ],
+      "bytes": 223935
+    },
+    {
+      "path": "scenes/stadium-track-side-background.png",
+      "size": [
+        2172,
+        724
+      ],
+      "bytes": 1499761,
+      "figmaNodeId": "2:1772"
+    },
+    {
+      "path": "scenes/start-gun-sound-effect-korean.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "bytes": 589685
+    },
+    {
+      "path": "scenes/start-label-korean.png",
+      "size": [
+        1864,
+        843
+      ],
+      "bytes": 688492
+    },
+    {
+      "path": "source/racing-props-source-sprite-sheet.png",
+      "size": [
+        1672,
+        941
+      ],
+      "bytes": 1739214
+    },
+    {
+      "path": "penguins/svg/penguin-documentation-level-5.svg",
+      "size": [
+        "234",
+        "184"
+      ],
+      "bytes": 54040,
+      "figmaNodeId": "2:1773"
+    }
+  ]
+}
