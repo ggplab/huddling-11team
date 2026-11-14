@@ -39,6 +39,14 @@ export async function loadSnapshot(): Promise<Snapshot | null> {
 
 export function blendReal(prev: RaceState, snap: Snapshot): RaceState {
   const events = [...snap.events].sort((a, b) => a.at.localeCompare(b.at));
+  // 커밋 하나가 파트별로 나뉘어 여러 줄이므로 중계에는 한 번만 보인다
+  const seen = new Set<string>();
+  const uniq = events.filter((e) => {
+    const k = `${e.at}|${e.team}|${e.type}|${e.message}`;
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
   const raw = prev.scores.map((_, i) => {
     const t = snap.teams.find((x) => Number(x.id) === i + 1);
     if (!t) return 0;
@@ -52,10 +60,10 @@ export function blendReal(prev: RaceState, snap: Snapshot): RaceState {
     const mine = events.filter((e) => Number(e.team) === i + 1);
     const parts = [0, 0, 0, 0];
     mine.filter((e) => e.type === 'commit').forEach((e) => (parts[KIND_INDEX[e.kind] ?? 2] += 1));
-    const recent = mine.slice(-4).reverse().map((e) => toFeed(e, false));
+    const recent = uniq.filter((e) => Number(e.team) === i + 1).slice(-4).reverse().map((e) => toFeed(e, false));
     return { ...st, commits: t.commits, prs: t.prs.merged, fails: t.prs.conflicting, parts, recent: recent.length ? recent : st.recent };
   });
-  const feed = events.slice(-6).reverse().map((e) => toFeed(e, true));
+  const feed = uniq.slice(-6).reverse().map((e) => toFeed(e, true));
   return {
     ...prev,
     scores,
