@@ -3,6 +3,7 @@ import type { Speed } from './config';
 import { Stage } from './components/Stage';
 import type { Scenario } from './data/types';
 import { PodiumScreen } from './screens/PodiumScreen';
+import { MobileRaceScreen, useIsMobile } from './screens/MobileRaceScreen';
 import { RaceScreen } from './screens/RaceScreen';
 import { StartScene } from './screens/StartScene';
 
@@ -27,12 +28,18 @@ function readParams() {
 export default function App() {
   const params = readParams();
   const [screen, setScreen] = useState<Screen>(params.screen);
+  const mobile = useIsMobile();
   // 같은 화면을 다시 열 때 처음부터 재생되도록 key를 바꾼다
   const [runId, setRunId] = useState(0);
   const goto = (s: Screen) => {
     setRunId((n) => n + 1);
     setScreen(s);
   };
+
+  // 휴대폰 폭의 레이스 화면은 고정 1600×900 무대를 쓰지 않고 세로로 쌓는다
+  if (mobile && screen === 'race' && params.scenario === 'live') {
+    return <MobileRaceScreen key={runId} speed={params.speed} onFinish={() => goto('podium')} />;
+  }
 
   return (
     <Stage>
