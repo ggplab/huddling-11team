@@ -1,5 +1,5 @@
 // 첫 화면: 커밋 레이스. 순위 타워, S자 트랙, 파트별 주행 기록을 한 화면에 보여 준다.
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import RankTower from '../components/race/RankTower'
 import SidePanel from '../components/race/SidePanel'
 import SnakeTrack from '../components/race/SnakeTrack'
@@ -17,6 +17,8 @@ export default function Home() {
   const { t, snap, duration } = useSim()
   const track = useRaceTrack(STEPS)
   const [selectedId, setSelectedId] = useState<string>()
+  const panelRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLElement | SVGElement | null>(null)
 
   // 결승선 거리: 재생이 끝났을 때 1위의 distance. 0이면 1로 둔다.
   const finish = Math.max(1, ...Object.values(track.distance).map((list) => list[list.length - 1] ?? 0))
@@ -34,13 +36,46 @@ export default function Home() {
     })
   }
   const selected = snap.teams.find((x) => x.id === selectedId)
-  const pick = (id: string) => setSelectedId((cur) => (cur === id ? undefined : id))
+  const close = (restoreFocus = true) => {
+    setSelectedId(undefined)
+    if (restoreFocus) triggerRef.current?.focus()
+  }
+  const pick = (id: string) => {
+    if (selectedId === id) {
+      close()
+    } else {
+      if (document.activeElement instanceof HTMLElement || document.activeElement instanceof SVGElement) triggerRef.current = document.activeElement
+      setSelectedId(id)
+    }
+  }
+
+  useEffect(() => {
+    if (!selectedId) return
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') close()
+    }
+    const onClick = (event: MouseEvent) => {
+      const target = event.target
+      if (!(target instanceof Element) || panelRef.current?.contains(target) || target.closest('[aria-controls="team-detail"]')) return
+      close(false)
+    }
+    document.addEventListener('keydown', onKeyDown)
+    document.addEventListener('click', onClick)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('click', onClick)
+    }
+  }, [selectedId])
+
+  useEffect(() => {
+    if (selectedId) panelRef.current?.focus()
+  }, [selectedId])
 
   return (
     <section className="space-y-3">
-      <a href="/race/" className="block rounded-card bg-dev px-3 py-2 text-center text-sm font-bold text-white">대형 화면 중계판 열기 (출발, 레이스 중계, 시상식)</a>
+      <a href="/race/index.html" className="block rounded-card bg-dev px-3 py-2 text-center text-sm font-bold text-white">대형 화면 중계판 열기 (출발, 레이스 중계, 시상식)</a>
       <TopBar commits={commits} merges={merges} />
-      <div className="grid gap-3 lg:grid-cols-[250px_minmax(0,1fr)_320px]">
+      <div className="grid gap-3 lg:grid-cols-[250px_minmax(0,1fr)]">
         <RankTower teams={ranked} selected={selectedId} onSelect={pick} moved={moved} />
         <div className="rounded-card border border-line bg-surface p-3">
           <div className="mb-2 flex flex-wrap items-baseline gap-2">
@@ -50,8 +85,8 @@ export default function Home() {
           </div>
           <SnakeTrack teams={snap.teams} finish={finish} selected={selectedId} onSelect={pick} />
         </div>
-        <SidePanel snap={snap} t={t} team={selected} finish={finish} onClose={() => setSelectedId(undefined)} />
       </div>
+      <SidePanel snap={snap} t={t} team={selected} finish={finish} onClose={() => close()} panelRef={panelRef} />
     </section>
   )
 }

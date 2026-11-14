@@ -1,6 +1,7 @@
 import { CONFIG } from '../config';
 import { rankMap, sortedTeams } from '../lib/format';
-import { pointAt, runnerPosition, TRACK, TRACK_PATH } from '../lib/track';
+import { pointAt, TRACK, TRACK_PATH } from '../lib/track';
+import AnimatedPenguin from './AnimatedPenguin';
 import { color, TILE_BG, TILE_FG, teamColor } from '../theme';
 
 interface Props {
@@ -115,13 +116,20 @@ export function Track({ scores, finished, boost, slip, selected, running, onSele
         </div>
 
         {scores.map((score, i) => {
-          const { x, y } = runnerPosition(score / goal, i);
+          const point = pointAt(score / goal);
+          // Spread runners in rows and columns so tied teams remain individually clickable.
+          const lane = (i % TRACK.lanes) - 2;
+          const group = Math.floor(i / TRACK.lanes);
+          const groupCount = Math.ceil(scores.length / TRACK.lanes);
+          const along = (group - (groupCount - 1) / 2) * 86;
+          const across = lane * 48;
+          const x = Math.round(point.x + point.dx * along - point.dy * across);
+          const y = Math.round(point.y + point.dy * along + point.dx * across);
           const isMine = i === mine;
           const isSel = selected === i;
           const dim = selected !== null && !isSel;
           const done = finished.includes(i);
-          const size = isSel ? 64 : isMine ? 56 : 46;
-          const faceLeft = pointAt(Math.min(1, score / goal)).dx < 0;
+          const size = isSel ? 90 : isMine ? 86 : 80;
           let tag = '';
           let tagBg = '';
           if (done) [tag, tagBg] = ['완주', color.ink];
@@ -150,10 +158,10 @@ export function Track({ scores, finished, boost, slip, selected, running, onSele
                 aria-pressed={isSel}
                 style={{
                   position: 'absolute',
-                  left: -size * 0.75,
-                  top: -size * 1.2,
-                  width: size * 1.5,
-                  height: size * 1.5,
+                  left: -size / 2,
+                  top: -size * 0.75,
+                  width: size,
+                  height: size,
                   padding: 0,
                   border: 'none',
                   background: 'transparent',
@@ -161,7 +169,9 @@ export function Track({ scores, finished, boost, slip, selected, running, onSele
                   filter: isSel ? 'drop-shadow(0 0 6px #FFFFFF) drop-shadow(0 4px 8px rgba(0,0,0,0.45))' : 'drop-shadow(0 2px 3px rgba(0,0,0,0.35))',
                 }}
               >
-                <img src={PENGUINS[i % PENGUINS.length]} alt="" draggable={false} style={{ width: '100%', height: '100%', objectFit: 'contain', pointerEvents: 'none', transform: faceLeft ? 'scaleX(-1)' : undefined, transition: 'transform 0.3s' }} />
+                <span style={{ display: 'block', transform: point.dx < 0 ? 'scaleX(-1)' : undefined, pointerEvents: 'none' }}>
+                  <AnimatedPenguin size={size} running={running && !done} boosted={!!boost[i]} variant={i} />
+                </span>
                 <span
                   style={{
                     position: 'absolute',
@@ -185,7 +195,7 @@ export function Track({ scores, finished, boost, slip, selected, running, onSele
                 </span>
               </button>
               {tag && (
-                <div style={{ position: 'absolute', left: -30, top: -size * 1.2 - 20, width: 60, textAlign: 'center', fontSize: 11, fontWeight: 700, color: '#FFFFFF', background: tagBg, borderRadius: 4, padding: '1px 0', pointerEvents: 'none' }}>
+                <div style={{ position: 'absolute', left: -30, top: -size * 0.75 - 20, width: 60, textAlign: 'center', fontSize: 11, fontWeight: 700, color: '#FFFFFF', background: tagBg, borderRadius: 4, padding: '1px 0', pointerEvents: 'none' }}>
                   {tag}
                 </div>
               )}
@@ -197,7 +207,6 @@ export function Track({ scores, finished, boost, slip, selected, running, onSele
   );
 }
 
-const PENGUINS = ['/images/race/penguin-classic.png', '/images/race/penguin-baby.png', '/images/race/penguin-sporty.png', '/images/race/penguin-developer.png'];
 
 function Sign({ left, top, bg, label, checkerSide }: { left: number; top: number; bg: string; label: string; checkerSide: 'left' | 'right' }) {
   const checker = <div style={{ width: 22, height: '100%', flexShrink: 0, background: 'repeating-conic-gradient(#1B1B1A 0% 25%, #FFFFFF 0% 50%) 0 0 / 11px 11px' }} />;

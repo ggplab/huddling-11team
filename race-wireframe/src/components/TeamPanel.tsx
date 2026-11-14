@@ -11,7 +11,7 @@ interface Props {
   accent?: string;
 }
 
-/** 오른쪽 사이드 패널: 선택한 팀의 파트별 주행 기록 */
+/** 선택한 팀의 파트별 주행 기록 */
 export function TeamPanel({ state, teamIndex, onClose, accent = color.accent }: Props) {
   const goal = CONFIG.goal;
   const mine = CONFIG.myTeam - 1;
@@ -33,12 +33,12 @@ export function TeamPanel({ state, teamIndex, onClose, accent = color.accent }: 
   );
 
   return (
-    <section style={{ flexGrow: 1, minHeight: 0, background: '#FFFFFF', border: `1px solid ${color.line}`, borderRadius: 10, padding: 20, display: 'flex', flexDirection: 'column', gap: 16, overflow: 'hidden' }}>
+    <section role="dialog" aria-modal="false" aria-labelledby="team-panel-title" style={{ height: '100%', boxSizing: 'border-box', background: '#FFFFFF', border: `1px solid ${color.line}`, borderRadius: 10, padding: '24px 26px', display: 'flex', flexDirection: 'column', gap: 20, overflowY: 'auto', boxShadow: '0 12px 36px rgba(0, 0, 0, 0.14)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <div style={{ width: 44, height: 44, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 900, color: '#FFFFFF', flexShrink: 0, background: tc }}>{teamIndex + 1}</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>{teamIndex + 1}팀</h2>
+            <h2 id="team-panel-title" style={{ margin: 0, fontSize: 22, fontWeight: 700 }}>{teamIndex + 1}팀</h2>
             {teamIndex === mine && <div style={{ fontSize: 11, fontWeight: 700, color: '#FFFFFF', background: accent, borderRadius: 4, padding: '1px 6px' }}>우리 팀</div>}
           </div>
           <div style={{ fontSize: 12, color: color.textMuted }}>
@@ -46,7 +46,7 @@ export function TeamPanel({ state, teamIndex, onClose, accent = color.accent }: 
           </div>
         </div>
         <div style={{ flexGrow: 1 }} />
-        <button type="button" onClick={onClose} aria-label="팀 패널 닫기" style={{ width: 44, height: 44, border: `1px solid ${color.line}`, borderRadius: 8, background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: color.text }}>
+        <button type="button" autoFocus onClick={onClose} aria-label="팀 패널 닫기" style={{ width: 44, height: 44, border: `1px solid ${color.line}`, borderRadius: 8, background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: color.text }}>
           <svg width={16} height={16} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden="true">
             <path d="M3 3l10 10M13 3 3 13" />
           </svg>
@@ -93,7 +93,7 @@ export function TeamPanel({ state, teamIndex, onClose, accent = color.accent }: 
         ))}
       </div>
 
-      <div style={{ flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 6, overflow: 'hidden' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
         <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700 }}>최근 활동</h3>
         <FeedList items={st.recent} />
       </div>

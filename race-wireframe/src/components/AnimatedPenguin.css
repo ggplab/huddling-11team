@@ -1,0 +1,54 @@
+.animated-penguin {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  vertical-align: middle;
+}
+
+.animated-penguin__sprite {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-image: url('./penguin-sprite.svg');
+  background-repeat: no-repeat;
+  background-size: 800% 100%;
+  image-rendering: pixelated;
+}
+
+.animated-penguin--running .animated-penguin__sprite {
+  animation: penguin-stride 0.64s steps(8) infinite;
+}
+
+.animated-penguin--boosted .animated-penguin__sprite {
+  filter: drop-shadow(0 0 4px #ffd451);
+}
+
+.animated-penguin__accessory {
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Small accents keep teams distinguishable without obscuring the face. */
+.animated-penguin--variant-1 .animated-penguin__accessory {
+  left: 34%; top: 13%; width: 32%; height: 7%;
+  background: #ed6561;
+  box-shadow: 0 -3px 0 #ed6561;
+}
+.animated-penguin--variant-2 .animated-penguin__accessory {
+  left: 33%; top: 38%; width: 34%; height: 5%;
+  background: #68bed4;
+}
+.animated-penguin--variant-3 .animated-penguin__accessory {
+  left: 56%; top: 12%; width: 10%; height: 10%;
+  background: #ffd451;
+  box-shadow: -4px 2px 0 #ffd451, 4px 2px 0 #ffd451;
+}
+
+@keyframes penguin-stride {
+  from { background-position: 0 0; }
+  to { background-position: 114.285714% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animated-penguin--running .animated-penguin__sprite { animation: none; }
+}
