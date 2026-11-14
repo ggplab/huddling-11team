@@ -1,3 +1,4 @@
+import { partLevel, partPenguin } from '../assets';
 import { CONFIG } from '../config';
 import type { RaceState } from '../data/types';
 import { rankMap } from '../lib/format';
@@ -82,8 +83,13 @@ export function TeamPanel({ state, teamIndex, onClose, accent = color.accent }: 
         </div>
         {st.parts.map((c, k) => (
           <div key={k} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 12, height: 12, borderRadius: 3, flexShrink: 0, background: PART_COLORS[k] }} />
-            <div style={{ width: 56, fontSize: 13 }}>{CONFIG.parts[k]}</div>
+            <div style={{ position: 'relative', width: 52, height: 40, flexShrink: 0, borderRadius: 8, background: '#F6F6F3', overflow: 'hidden' }}>
+              <img key={partLevel(c)} src={partPenguin(k, partLevel(c))} alt="" draggable={false} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+            </div>
+            <div style={{ width: 56, display: 'flex', flexDirection: 'column' }}>
+              <span style={{ fontSize: 13 }}>{CONFIG.parts[k]}</span>
+              <span style={{ fontSize: 11, fontWeight: 800, color: PART_COLORS[k] }}>Lv.{partLevel(c)}</span>
+            </div>
             <div style={{ flexGrow: 1, height: 8, background: color.lineSoft, borderRadius: 4, overflow: 'hidden' }}>
               <div style={{ height: 8, borderRadius: 4, transition: 'width 0.5s', width: `${Math.round((c / top) * 100)}%`, background: PART_COLORS[k] }} />
             </div>
