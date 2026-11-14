@@ -11,7 +11,7 @@ export default function Layout({ pages, children }: Props) {
   return (
     <div className="min-h-screen bg-bg font-sans text-ink">
       <header className="border-b border-line bg-surface">
-        <nav className="mx-auto flex max-w-5xl flex-wrap items-center gap-2 px-4 py-3">
+        <nav className="mx-auto flex max-w-7xl flex-wrap items-center gap-2 px-4 py-3">
           {pages.map((p) => (
             <NavLink
               key={p.path}
@@ -28,7 +28,7 @@ export default function Layout({ pages, children }: Props) {
           ))}
         </nav>
       </header>
-      <main className="mx-auto max-w-5xl px-4 py-8">{children}</main>
+      <main className="mx-auto max-w-7xl px-4 py-4">{children}</main>
     </div>
   )
 }

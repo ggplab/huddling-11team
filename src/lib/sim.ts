@@ -2,7 +2,7 @@
 // 계산은 core.ts(순수 함수)가 하고, 이 파일은 원천 선택과 재생 상태를 맡는다.
 import { useMemo, useSyncExternalStore } from 'react'
 import { DURATION, EVENTS, KINDS, TEAMS } from '../data/events'
-import type { Kind } from '../data/events'
+import type { CommitEvent, Kind } from '../data/events'
 import {
   RULES,
   computeRaceTrack,
@@ -171,4 +171,12 @@ export const STATUS_STYLE: Record<Status, string> = {
   순항: 'bg-brand-soft text-brand',
   '충돌 중': 'bg-danger text-white',
   멈춤: 'bg-ink text-white',
+}
+
+// 조 하나의 최근 이벤트 n건(최신이 맨 앞). t 이전 것만.
+export function teamRecent(teamId: string, t: number, n: number): CommitEvent[] {
+  return active()
+    .events.filter((e) => e.team === teamId && e.t <= t)
+    .slice(-n)
+    .reverse()
 }

@@ -22,6 +22,14 @@
   --color-ground: #cbd5e1;
   --color-danger: #dc2626;
 
+  /* 레이스 화면: 트랙, 잔디, 어두운 패널, 금은동 */
+  --color-track: #d9573f;
+  --color-grass: #9bc08a;
+  --color-panel: #17181c;
+  --color-gold: #e0a82e;
+  --color-silver: #9ca3af;
+  --color-bronze: #b4713a;
+
   /* 글꼴: font-sans */
   --font-sans: "Pretendard Variable", Pretendard, system-ui, -apple-system, sans-serif;
 

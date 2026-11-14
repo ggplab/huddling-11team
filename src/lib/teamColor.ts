@@ -10,3 +10,8 @@ export function teamColor(team: string): string {
   const hue = (teamNumber(team) * 137.5) % 360
   return `hsl(${hue.toFixed(0)} 70% 50%)`
 }
+
+// 화면에 보여 줄 조 이름. '11조'는 '11팀', 예시 'A조'는 1번이라 '1팀'
+export function teamLabel(team: string): string {
+  return `${teamNumber(team)}팀`
+}

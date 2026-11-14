@@ -1,69 +1,55 @@
-import { Link } from 'react-router-dom'
+// 첫 화면: 커밋 레이스. 순위 타워, S자 트랙, 파트별 주행 기록을 한 화면에 보여 준다.
+import { useState } from 'react'
+import RankTower from '../components/race/RankTower'
+import SidePanel from '../components/race/SidePanel'
+import SnakeTrack from '../components/race/SnakeTrack'
+import TopBar from '../components/race/TopBar'
+import { useRaceTrack, useSim } from '../lib/sim'
+import { teamNumber } from '../lib/teamColor'
 
-export const title = '홈'
+export const title = '레이스'
 export const order = 0
 
-const PROTOTYPES = [
-  {
-    to: '/race',
-    name: '레이싱',
-    text: '조마다 차 한 대. 커밋이 쌓이면 앞으로 나가고, 충돌이 나면 뒤로 밀립니다.',
-  },
-  {
-    to: '/skyline',
-    name: '시안 A 스카이라인',
-    text: '조마다 도시 하나. 네 구역에 건물이 올라가고, 충돌이 나면 건물이 낮아집니다.',
-  },
-  {
-    to: '/blocks',
-    name: '시안 B 블록 지도',
-    text: '위에서 내려다본 도시. 구역마다 땅 16칸이 커밋으로 채워집니다.',
-  },
-  {
-    to: '/board',
-    name: '시안 C 관제판',
-    text: '순위와 최근 속도, 충돌을 한 표로. 지금 가 볼 조를 맨 위에 알려 줍니다.',
-  },
-]
+const STEPS = 60
+const LOOKBACK = 2 // 몇 칸 전 순위와 비교할지
 
 export default function Home() {
+  const { t, snap, duration } = useSim()
+  const track = useRaceTrack(STEPS)
+  const [selectedId, setSelectedId] = useState<string>()
+
+  // 결승선 거리: 재생이 끝났을 때 1위의 distance. 0이면 1로 둔다.
+  const finish = Math.max(1, ...Object.values(track.distance).map((list) => list[list.length - 1] ?? 0))
+  const ranked = [...snap.teams].sort((a, b) => a.rank - b.rank || teamNumber(a.team) - teamNumber(b.team))
+  const commits = snap.teams.reduce((s, x) => s + x.commits, 0)
+  const merges = snap.teams.reduce((s, x) => s + x.merges, 0)
+
+  // 순위 변동: 지금 칸과 LOOKBACK칸 전의 rank 배열을 비교한다(양수면 올라감).
+  const cell = Math.min(STEPS - 1, Math.floor((t / duration) * STEPS) - 1)
+  const moved: Record<string, number> = {}
+  if (cell >= LOOKBACK) {
+    snap.teams.forEach((x) => {
+      const r = track.rank[x.id]
+      if (r) moved[x.id] = r[cell - LOOKBACK] - r[cell]
+    })
+  }
+  const selected = snap.teams.find((x) => x.id === selectedId)
+  const pick = (id: string) => setSelectedId((cur) => (cur === id ? undefined : id))
+
   return (
-    <section className="space-y-8">
-      <div className="space-y-3">
-        <p className="text-sm font-semibold text-brand">허들링 11조</p>
-        <h1 className="text-4xl font-bold">커밋시티</h1>
-        <p className="text-lg">커밋으로 짓는 도시. 해커톤 운영진이 조별 진행 상황을 한눈에 봅니다.</p>
-        <p className="text-muted">
-          조가 커밋을 올릴 때마다 개발, 디자인, 기획, 문서 네 구역에 건물이 올라갑니다. 운영진은 어느 조가 멈췄는지,
-          어느 조가 충돌 중인지 보고 먼저 찾아갈 조를 고릅니다.
-        </p>
-      </div>
-
-      <div>
-        <h2 className="mb-3 text-xl font-bold">시안 세 개</h2>
-        <p className="mb-4 text-sm text-muted">
-          세 시안은 같은 예시 데이터와 같은 점수 규칙으로 돕니다. 보여 주는 방식만 다릅니다. 하나를 고르거나 섞어서
-          다듬습니다.
-        </p>
-        <ul className="grid gap-4 sm:grid-cols-3">
-          {PROTOTYPES.map((p) => (
-            <li key={p.to}>
-              <Link to={p.to} className="block h-full rounded-card border border-line bg-surface p-5 hover:border-brand">
-                <h3 className="font-semibold">{p.name}</h3>
-                <p className="mt-2 text-sm text-muted">{p.text}</p>
-                <span className="mt-4 inline-block text-sm font-semibold text-brand">열어 보기</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="rounded-card bg-brand-soft p-5 text-sm">
-        <p className="font-semibold">시연용 예시 데이터</p>
-        <p className="mt-1">
-          가상의 네 조(새벽시, 파도시, 숲속시, 별빛시)가 3시간 동안 올린 커밋을 재생합니다. 실제 조의 기록이 아닙니다.
-          재생 속도는 1배, 2배, 5배, 10배로 바꿀 수 있습니다.
-        </p>
+    <section className="space-y-3">
+      <TopBar commits={commits} merges={merges} />
+      <div className="grid gap-3 lg:grid-cols-[250px_minmax(0,1fr)_320px]">
+        <RankTower teams={ranked} selected={selectedId} onSelect={pick} moved={moved} />
+        <div className="rounded-card border border-line bg-surface p-3">
+          <div className="mb-2 flex flex-wrap items-baseline gap-2">
+            <h2 className="font-bold">레이스 트랙</h2>
+            <span className="text-xs text-muted">결승선 {Math.round(finish).toLocaleString('ko-KR')}점</span>
+            <span className="ml-auto text-xs text-muted">커밋 = 전진, PR 머지 = 부스터, 충돌 = 미끄러짐</span>
+          </div>
+          <SnakeTrack teams={snap.teams} finish={finish} selected={selectedId} onSelect={pick} />
+        </div>
+        <SidePanel snap={snap} t={t} team={selected} finish={finish} onClose={() => setSelectedId(undefined)} />
       </div>
     </section>
   )
