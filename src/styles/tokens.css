@@ -1,15 +1,26 @@
-/* 공용 파일: 개발 담당만 고친다. 색, 글꼴, 모서리 값은 여기 한 곳에서만 정한다. */
+/* 공용 파일: 조장만 고친다. 색, 글꼴, 모서리 값은 여기 한 곳에서만 정한다. */
 @import "tailwindcss";
 
 @theme {
-  /* 색: bg-brand, text-ink, border-line 처럼 쓴다 */
-  --color-brand: #2563eb;
-  --color-brand-soft: #dbeafe;
+  /* 기본 색: bg-brand, text-ink, border-line 처럼 쓴다 */
+  --color-brand: #4f46e5;
+  --color-brand-soft: #e0e7ff;
   --color-ink: #111827;
   --color-muted: #6b7280;
   --color-bg: #f8fafc;
   --color-surface: #ffffff;
   --color-line: #e5e7eb;
+
+  /* 네 구역 색: bg-dev, text-design 처럼 쓴다 */
+  --color-dev: #2563eb;
+  --color-design: #db2777;
+  --color-plan: #d97706;
+  --color-docs: #059669;
+
+  /* 도시 배경과 경고 */
+  --color-sky: #e0f2fe;
+  --color-ground: #cbd5e1;
+  --color-danger: #dc2626;
 
   /* 글꼴: font-sans */
   --font-sans: "Pretendard Variable", Pretendard, system-ui, -apple-system, sans-serif;

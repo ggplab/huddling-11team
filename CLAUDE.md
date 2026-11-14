@@ -7,6 +7,10 @@
 
 주제와 핵심 기능은 `docs/plan.md`의 주제 절에 있다. 비어 있으면 사용자에게 한 줄 기획을 먼저 묻는다.
 
+## 서비스
+
+커밋시티는 해커톤 운영진이 조별 진행 상황을 보는 관제판이다. 조 하나가 도시 하나이고, 커밋이 쌓이면 개발, 디자인, 기획, 문서 네 구역에 건물이 올라간다. 시연은 예시 데이터를 재생해서 한다. 화면에 "시연용 예시 데이터"라는 안내를 지우지 않는다.
+
 ## 범위
 
 - 핵심 기능은 1개다. 사용자의 요청에 "그리고"로 이어지는 두 번째 기능이 있으면 만들기 전에 "기능이 2개입니다. 어느 것을 남길까요?"라고 묻는다.
@@ -21,16 +25,17 @@ Vite + React + TypeScript + Tailwind CSS v4 + React Router(HashRouter). 배포�
 ## 파일 소유
 
 - 사용자가 맡은 화면 파일(`src/pages/` 아래 자기 파일)과 그 화면 전용 컴포넌트(`src/components/화면이름/`)만 고친다.
-- 새 화면은 `src/pages/Example.tsx`를 복사해 만든다. 파일 이름이 주소가 된다(`Search.tsx`는 `/#/search`). 메뉴 이름과 순서는 파일 안의 `title`, `order`로 정한다. 화면을 더하려고 `src/App.tsx`를 고치지 않는다.
+- 새 화면은 `src/pages/`의 기존 화면 파일 하나를 복사해 만든다. 파일 이름이 주소가 된다(`Search.tsx`는 `/#/search`). 메뉴 이름과 순서는 파일 안의 `title`, `order`로 정한다. 화면을 더하려고 `src/App.tsx`를 고치지 않는다.
 - 아래 공용 파일은 고치지 않는다. 바꿔야 하면 멈추고, 무엇을 왜 바꿔야 하는지 한 줄로 정리해 조장에게 요청하라고 안내한다.
   - `package.json`, 잠금 파일
   - `src/App.tsx`, `src/main.tsx`, `src/components/Layout.tsx`, `index.html`
   - `src/styles/tokens.css`
+  - `src/data/events.ts`, `src/lib/sim.ts`, `src/components/Playback.tsx`, `src/components/TeamHeader.tsx`
   - 배포와 빌드 설정, `.github/`
-- 색, 글꼴, 모서리는 `src/styles/tokens.css`에 정의된 이름만 쓴다(`bg-brand`, `text-muted`, `border-line`, `rounded-card`). 색상 값을 직접 적지 않는다. 새 색이 필요하면 조장에게 요청하라고 안내한다.
+- 색, 글꼴, 모서리는 `src/styles/tokens.css`에 정의된 이름만 쓴다(`bg-brand`, `text-muted`, `border-line`, `rounded-card`, 구역 색 `bg-dev`, `bg-design`, `bg-plan`, `bg-docs`). 색상 값을 직접 적지 않는다. 새 색이 필요하면 조장에게 요청하라고 안내한다.
 - 이미지는 `public/images/`에 영어 소문자와 하이픈 이름으로 넣고 `/images/파일이름`으로 불러온다. 피그마 링크와 참고 자료는 `design/`에 사용자 이름으로 시작하는 파일로 둔다.
 - 주제, 화면 목록, 담당은 `docs/plan.md`에 있다. 작업을 시작하기 전에 읽는다. 이 파일은 조장만 고치므로 수정하지 않는다.
-- 데이터는 `src/data/mock.ts`의 가짜 데이터를 먼저 쓴다. 자기 화면에만 쓰는 가짜 데이터는 화면 파일 안에 둔다. 실제 API와 서버 연결은 조장이 한다.
+- 데이터는 `src/data/events.ts`의 시연용 예시 데이터를 쓴다. 진척 계산은 `src/lib/sim.ts`의 `useSim()`으로 받아 쓰고 화면에서 따로 계산하지 않는다. 자기 화면에만 쓰는 가짜 데이터는 화면 파일 안에 둔다. 실제 API와 서버 연결은 조장이 한다.
 
 ## git
 
