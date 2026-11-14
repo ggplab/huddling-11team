@@ -21,14 +21,17 @@ export function IntroScreen({ onStart, onSkip }: { onStart: () => void; onSkip: 
       <div style={{ marginTop: 6, fontSize: 15, lineHeight: 1.6, color: '#3D3D3A' }}>{body}</div>
     </div>
   );
-  const term = (dot: string, name: string, tag: string, desc: string) => (
-    <div style={{ background: '#FFFFFF', border: `1.5px solid ${color.line}`, borderRadius: 12, padding: '12px 14px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <span style={{ width: 12, height: 12, borderRadius: '50%', background: dot, flexShrink: 0 }} />
-        <span style={{ fontSize: 16, fontWeight: 900 }}>{name}</span>
-        <span style={{ fontSize: 12, fontWeight: 800, color: '#FFFFFF', background: dot, borderRadius: 5, padding: '1px 7px' }}>{tag}</span>
-      </div>
-      <div style={{ marginTop: 6, fontSize: 14, lineHeight: 1.6, color: '#3D3D3A' }}>{desc}</div>
+  const list = (title: string, rows: [string, string, string][]) => (
+    <div style={{ background: '#FFFFFF', border: `1.5px solid ${color.line}`, borderRadius: 14, padding: '14px 16px' }}>
+      <div style={{ fontSize: 13, fontWeight: 800, color: color.textMuted }}>{title}</div>
+      <ul style={{ margin: '8px 0 0', padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {rows.map(([dot, name, desc]) => (
+          <li key={name} style={{ display: 'flex', gap: 8, alignItems: 'baseline', fontSize: 15, lineHeight: 1.5 }}>
+            <span style={{ width: 9, height: 9, borderRadius: '50%', background: dot, flexShrink: 0, transform: 'translateY(-1px)' }} />
+            <span><b>{name}</b>: {desc}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 
@@ -62,10 +65,10 @@ export function IntroScreen({ onStart, onSkip }: { onStart: () => void; onSkip: 
             <figcaption style={{ padding: '8px 12px', fontSize: 12, color: '#D9D9D4', background: color.ink }}>Google DeepMind AI 해커톤 발표 현장 (2026.10.16, Google for Startups Campus Seoul)</figcaption>
           </figure>
           <p style={{ margin: '14px 0 0', fontSize: 'clamp(17px, 2.6vw, 22px)', fontWeight: 800, lineHeight: 1.55 }}>
-            해커톤은 작업이 실시간으로 일어납니다. 평가위원은 중간에 각 조가 어디까지 왔는지 보기 어렵고, 그래서 평가 시간이 뒤로 밀립니다.
+            해커톤 작업은 실시간으로 일어나 중간 점검이 어렵고, 그래서 평가가 늦어집니다.
           </p>
           <p style={{ margin: '8px 0 0', fontSize: 'clamp(15px, 2.2vw, 18px)', lineHeight: 1.6 }}>
-            평가가 늦어지는 것을 막고, 운영진과 참여자가 &ldquo;우리가 잘하고 있나&rdquo;를 보며 서로 독려하도록 대시보드를 만듭니다.
+            운영진과 참여자가 &ldquo;우리가 잘하고 있나&rdquo;를 보고 서로 독려하는 대시보드를 만듭니다.
           </p>
         </section>
 
@@ -96,32 +99,25 @@ export function IntroScreen({ onStart, onSkip }: { onStart: () => void; onSkip: 
         <section style={{ marginTop: 22 }}>
           <div style={{ fontSize: 13, fontWeight: 800, color: color.textMuted }}>그래서 이 화면은</div>
           <div style={{ marginTop: 8, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 14 }}>
-            {card('운영진 대시보드', '어느 조가 앞서는지, 어느 조가 멈춰 있는지 한눈에 봅니다. 사전 인터뷰할 조를 고르는 근거가 됩니다.', color.accent)}
-            {card('참여자 현황판', '우리 조와 다른 조의 진행을 레이스로 보며 서로 자극을 받습니다. 큰 화면에 띄워 두면 행사장 전체가 같이 봅니다.', '#2E7D4F')}
+            {card('운영진 대시보드', '앞선 조와 멈춘 조를 한눈에 보고, 사전 인터뷰할 조를 고릅니다.', color.accent)}
+            {card('참여자 현황판', '큰 화면에 띄워 두고 우리 조와 다른 조의 진행을 함께 봅니다.', '#2E7D4F')}
           </div>
         </section>
 
-        {/* 용어 정의 */}
-        <section style={{ marginTop: 22 }}>
-          <div style={{ fontSize: 13, fontWeight: 800, color: color.textMuted }}>용어 정의</div>
-          <div style={{ marginTop: 8, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 10 }}>
-            {term('#2E7D4F', '커밋', '전진', '조의 GitHub 저장소에 올라간 커밋 1건. 기본 10점에 바뀐 줄 수 × 0.1점을 더합니다(보너스는 최대 20점). 3줄 미만 커밋은 0점입니다.')}
-            {term(color.accent, 'PR 머지', '부스터', '풀 리퀘스트(PR)가 main에 합쳐진 1건. 한 번에 +30점을 얻습니다.')}
-            {term(color.slip, 'CI 실패', '미끄러짐', '자동 검사(CI)가 실패한 1건. 5점을 잃습니다. 지금 수집본에는 CI 기록이 없어, 충돌난 PR과 충돌 해결 커밋으로 대신 셉니다.')}
-            {term(color.lead, '결승선', '1,600점', '점수가 1,600점에 닿으면 완주입니다. 먼저 닿은 순서로 시상합니다.')}
-          </div>
-        </section>
-
-        {/* 트랙 지표를 만든 방법 */}
-        <section style={{ marginTop: 22 }}>
-          <div style={{ fontSize: 13, fontWeight: 800, color: color.textMuted }}>트랙 지표를 만든 방법</div>
-          <ol style={{ margin: '8px 0 0', padding: '16px 20px 16px 38px', background: '#FFFFFF', border: `1.5px solid ${color.line}`, borderRadius: 14, fontSize: 15, lineHeight: 1.7 }}>
-            <li><b>점수가 곧 거리입니다.</b> 조의 점수를 결승선 1,600점으로 나눈 비율만큼 S자 트랙을 나아갑니다. 50%면 트랙 한가운데입니다.</li>
-            <li><b>점수 = 커밋 점수 + PR 머지 × 30 - CI 실패 × 5.</b> 기획서의 점수 표를 그대로 옮긴 규칙입니다.</li>
-            <li><b>도배 방지 규칙도 정해 두었습니다.</b> 한 사람이 10분 안에 올린 커밋은 3개까지만 세고, 잠금 파일(package-lock 등), 빌드 결과물, 이미지 파일은 줄 수에서 뺍니다. GitHub 실시간 연동을 붙일 때 적용하며, 지금 화면에는 아직 적용 전입니다.</li>
-            <li><b>파트별 기록.</b> 커밋이 바꾼 파일의 경로와 확장자로 기획, 디자인, 개발, 문서 파트를 나눕니다. 파트 커밋이 쌓이면 펭귄 레벨이 오릅니다(2건, 5건, 10건, 20건에서 한 단계씩).</li>
-            <li><b>실제 기록을 출발점으로.</b> GitHub에서 모은 기록으로 조마다 커밋 × 10 + PR 머지 × 30 - 충돌 × 10을 계산합니다. 실제 1위를 1,250점 자리에 두고 나머지 조는 1위 대비 비율로 놓습니다. 이 값이 출발 위치의 70%이고, 30%는 시뮬레이션 값입니다. 그 뒤의 진행은 시연용 시뮬레이션이 이어 갑니다.</li>
-          </ol>
+        {/* 용어와 트랙 지표: 짧은 개조식 */}
+        <section style={{ marginTop: 22, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 14 }}>
+          {list('용어', [
+            ['#2E7D4F', '커밋 = 전진', '+10점, 바뀐 줄이 많으면 최대 +20점 더'],
+            [color.accent, 'PR 머지 = 부스터', '+30점'],
+            [color.slip, 'CI 실패 = 미끄러짐', '-5점 (지금은 충돌난 PR로 대신 셈)'],
+            [color.lead, '결승선', '1,600점, 먼저 닿은 순서로 시상'],
+          ])}
+          {list('트랙 지표', [
+            [color.ink, '거리', '점수 ÷ 1,600'],
+            [color.ink, '파트', '바뀐 파일 경로로 기획, 디자인, 개발, 문서 구분'],
+            [color.ink, '펭귄 레벨', '파트 커밋 2, 5, 10, 20건마다 한 단계'],
+            [color.ink, '출발 위치', '실제 GitHub 기록 70%, 시뮬레이션 30%'],
+          ])}
         </section>
 
         {/* 진행 버튼 */}
