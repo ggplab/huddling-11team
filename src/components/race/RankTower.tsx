@@ -30,8 +30,6 @@ export default function RankTower({ teams, selected, onSelect, moved }: Props) {
               <button
                 type="button"
                 onClick={() => onSelect(team.id)}
-                aria-controls="team-detail"
-                aria-pressed={selected === team.id}
                 className={`flex w-full items-center gap-2 rounded-md px-2 py-1 text-left text-sm ${
                   leader ? 'bg-dev' : 'bg-white/10 hover:bg-white/20'
                 } ${selected === team.id ? 'ring-2 ring-white' : ''}`}

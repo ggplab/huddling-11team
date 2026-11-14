@@ -1,15 +1,14 @@
 // 가운데 S자 트랙(SVG). 조 표식을 distance / 결승선 거리 만큼 길 위에 놓는다.
 import { useLayoutEffect, useRef, useState } from 'react'
-import { useSim, type TeamStat } from '../../lib/sim'
+import { penguinFor } from '../../lib/raceAssets'
+import type { TeamStat } from '../../lib/sim'
 import { teamColor, teamNumber } from '../../lib/teamColor'
-import AnimatedPenguin from './AnimatedPenguin'
 
 const PATH = 'M150,120 H820 A110,110 0 0 1 820,340 H180 A110,110 0 0 0 180,560 H820'
 
 type Props = { teams: TeamStat[]; finish: number; selected?: string; onSelect: (id: string) => void }
 
 export default function SnakeTrack({ teams, finish, selected, onSelect }: Props) {
-  const { playing } = useSim()
   const ref = useRef<SVGPathElement>(null)
   const [len, setLen] = useState(0)
   useLayoutEffect(() => {
@@ -29,32 +28,16 @@ export default function SnakeTrack({ teams, finish, selected, onSelect }: Props)
     return { x: a.x + (-dy / n) * side, y: a.y + (dx / n) * side }
   }
 
-  // 가까운 조는 작은 격자로 펼치되, 각 조의 기준점은 실제 거리에 둔다.
+  // 같은 자리에 몰린 조는 길과 수직 방향으로 어긋나게 놓는다
   const sorted = [...teams].sort((a, b) => a.distance - b.distance || a.id.localeCompare(b.id))
-  const positions: Record<string, { x: number; y: number }> = {}
+  const side: Record<string, number> = {}
   let group: TeamStat[] = []
   const flush = () => {
-    if (!group.length) return
-    const columns = Math.ceil(Math.sqrt(group.length))
-    const rows = Math.ceil(group.length / columns)
-    const points = group.map((tm, i) => {
-      const point = at(tm.distance / finish)
-      return {
-        x: point.x + (i % columns - (columns - 1) / 2) * 72,
-        y: point.y + (Math.floor(i / columns) - (rows - 1) / 2) * 72,
-      }
-    })
-    const minX = Math.min(...points.map((p) => p.x))
-    const maxX = Math.max(...points.map((p) => p.x))
-    const minY = Math.min(...points.map((p) => p.y))
-    const maxY = Math.max(...points.map((p) => p.y))
-    const shiftX = Math.max(0, 38 - minX) - Math.max(0, maxX - 962)
-    const shiftY = Math.max(0, 38 - minY) - Math.max(0, maxY - 642)
-    group.forEach((tm, i) => { positions[tm.id] = { x: points[i].x + shiftX, y: points[i].y + shiftY } })
+    group.forEach((tm, i) => (side[tm.id] = (i - (group.length - 1) / 2) * 22))
     group = []
   }
   sorted.forEach((tm) => {
-    if (group.length && (tm.distance - group[0].distance) / finish > 0.04) flush()
+    if (group.length && (tm.distance - group[0].distance) / finish > 0.025) flush()
     group.push(tm)
   })
   flush()
@@ -65,7 +48,7 @@ export default function SnakeTrack({ teams, finish, selected, onSelect }: Props)
 
   const lanes: [string, number][] = [['#fff', 124], ['var(--color-track)', 118], ['#fff', 92], ['var(--color-track)', 86], ['#fff', 60], ['var(--color-track)', 54], ['#fff', 28], ['var(--color-track)', 22]]
   return (
-    <svg viewBox="0 0 1000 680" className="w-full rounded-card bg-grass" role="group" aria-label="S자 레이스 트랙">
+    <svg viewBox="0 0 1000 680" className="w-full rounded-card bg-grass" role="img" aria-label="S자 레이스 트랙">
       <path ref={ref} d={PATH} fill="none" stroke="none" />
       {lanes.map(([c, w], i) => (
         <path key={i} d={PATH} fill="none" stroke={c} strokeWidth={w} />
@@ -101,31 +84,27 @@ export default function SnakeTrack({ teams, finish, selected, onSelect }: Props)
       )}
       {len > 0 &&
         teams.map((tm) => {
-          const q = positions[tm.id]
+          const q = at(tm.distance / finish, side[tm.id] ?? 0)
           const picked = selected === tm.id
+          const showPenguin = picked || tm.rank === 1
           return (
             <g
               key={tm.id}
-              role="button"
-              tabIndex={0}
-              aria-controls="team-detail"
-              aria-label={`${teamNumber(tm.team)}팀, ${tm.rank}위, 진행률 ${pct(tm)}% 상세 보기`}
-              aria-pressed={picked}
               onClick={() => onSelect(tm.id)}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                  event.preventDefault()
-                  onSelect(tm.id)
-                }
-              }}
               style={{ transform: `translate(${q.x}px, ${q.y}px)`, transition: 'transform 0.3s linear', cursor: 'pointer' }}
             >
-              <circle r="34" fill={picked ? '#fff' : 'transparent'} stroke={picked ? teamColor(tm.team) : 'transparent'} strokeWidth="4" />
-              <foreignObject x="-32" y="-32" width="64" height="64" pointerEvents="none">
-                <AnimatedPenguin size={64} running={playing} variant={teamNumber(tm.team)} />
-              </foreignObject>
-              <circle cx="25" cy="24" r="14" fill={teamColor(tm.team)} stroke="#fff" strokeWidth="2" />
-              <text x="25" y="29" fontSize="14" fontWeight="800" textAnchor="middle" fill="#fff" pointerEvents="none">{teamNumber(tm.team)}</text>
+              {showPenguin && (
+                <image
+                  href={penguinFor(teamNumber(tm.team))}
+                  x="-22"
+                  y="-62"
+                  width="44"
+                  height="44"
+                  style={{ imageRendering: 'pixelated' }}
+                />
+              )}
+              <circle r="18" fill={teamColor(tm.team)} stroke={picked ? '#111827' : '#fff'} strokeWidth={picked ? 5 : 3} />
+              <text y="6" fontSize="17" fontWeight="800" textAnchor="middle" fill="#fff">{teamNumber(tm.team)}</text>
             </g>
           )
         })}

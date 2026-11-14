@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import type { Speed } from '../config';
 import { CONFIG } from '../config';
 import { BroadcastBanner } from '../components/BroadcastBanner';
 import { btnOutline, btnSolid, Header } from '../components/Header';
+import { LiveFeed } from '../components/LiveFeed';
 import { RankingTower } from '../components/RankingTower';
 import { TeamPanel } from '../components/TeamPanel';
 import { Track } from '../components/Track';
@@ -21,40 +22,7 @@ interface Props {
 export function RaceScreen({ scenario = 'live', speed = 'normal', onFinish }: Props) {
   const [selected, setSelected] = useState<number | null>(null);
   const { state, banner, running, toggleRunning, isLive, mult, setMult, seek, start } = useRace({ scenario, speed, selected });
-  const panelRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLElement | null>(null);
-  const closePanel = (restoreFocus = true) => {
-    setSelected(null);
-    if (restoreFocus) triggerRef.current?.focus();
-  };
-  const toggleSelect = (i: number) => {
-    if (selected === i) {
-      closePanel();
-      return;
-    }
-    if (document.activeElement instanceof HTMLElement) triggerRef.current = document.activeElement;
-    setSelected(i);
-  };
-
-  useEffect(() => {
-    if (selected === null) return;
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') closePanel();
-    };
-    const onPointerDown = (event: PointerEvent) => {
-      const target = event.target;
-      if (!(target instanceof Element) || panelRef.current?.contains(target)) return;
-      // Team controls handle selection themselves, including toggling the current team.
-      if (target.closest('button[aria-pressed]')) return;
-      closePanel(false);
-    };
-    document.addEventListener('keydown', onKeyDown);
-    document.addEventListener('pointerdown', onPointerDown);
-    return () => {
-      document.removeEventListener('keydown', onKeyDown);
-      document.removeEventListener('pointerdown', onPointerDown);
-    };
-  }, [selected]);
+  const toggleSelect = (i: number) => setSelected((cur) => (cur === i ? null : i));
 
   const stat = (label: string, value: string | number) => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -117,11 +85,9 @@ export function RaceScreen({ scenario = 'live', speed = 'normal', onFinish }: Pr
           </div>
         </section>
 
-        {selected !== null && (
-          <div ref={panelRef} style={{ position: 'absolute', zIndex: 100, top: 150, right: 36, bottom: 36, width: 390, maxHeight: 680 }}>
-            <TeamPanel state={state} teamIndex={selected} onClose={() => closePanel()} />
-          </div>
-        )}
+        <aside style={{ width: 330, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 16, minHeight: 0 }}>
+          {selected === null ? <LiveFeed items={state.feed} /> : <TeamPanel state={state} teamIndex={selected} onClose={() => setSelected(null)} />}
+        </aside>
       </div>
 
       {banner && <BroadcastBanner key={`${banner.kind}-${banner.team}-${banner.time}`} banner={banner} live={isLive} />}
