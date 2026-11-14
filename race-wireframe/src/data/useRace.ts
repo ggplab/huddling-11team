@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CONFIG, SPEED_EVERY, type Speed } from '../config';
 import { createScenarioState, simulateEvent } from './simulation';
+import { blendReal, loadSnapshot } from './realData';
 import type { RaceState, Scenario } from './types';
 
 interface Options {
@@ -27,6 +28,18 @@ export function useRace({ scenario, speed, selected }: Options) {
 
   useEffect(() => {
     setState(createScenarioState(scenario));
+  }, [scenario]);
+
+  // 실제 수집본을 한 번 불러와 출발 상태에 섞는다(live 일 때만)
+  useEffect(() => {
+    if (scenario !== 'live') return;
+    let alive = true;
+    void loadSnapshot().then((snap) => {
+      if (alive && snap) setState((prev) => blendReal(prev, snap));
+    });
+    return () => {
+      alive = false;
+    };
   }, [scenario]);
 
   useEffect(() => {
